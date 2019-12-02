@@ -1,0 +1,6 @@
+# Editor stuff
+.idea/
+
+# Built results
+/bike-commerce
+/bike-commerce.exe
