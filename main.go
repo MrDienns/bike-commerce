@@ -8,8 +8,7 @@ import (
 
 func main() {
 	screen := view.NewRoot()
-	err := screen.Start()
-	if err != nil {
+	if err := screen.Start(); err != nil {
 		fmt.Printf("Failed to start application: %v\n", err)
 	}
 }

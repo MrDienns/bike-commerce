@@ -16,5 +16,7 @@ func NewRoot() *root {
 
 // Start initialises the underlying views and opens the application in the terminal.
 func (r *root) Start() error {
+	login := NewLoginView(r)
+	r.screen.SetRoot(login, true)
 	return r.screen.Run()
 }
