@@ -1,14 +1,7 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/MrDienns/bike-commerce/view"
-)
+import "github.com/MrDienns/bike-commerce/cmd"
 
 func main() {
-	screen := view.NewRoot()
-	if err := screen.Start(); err != nil {
-		fmt.Printf("Failed to start application: %v\n", err)
-	}
+	cmd.Execute()
 }

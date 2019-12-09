@@ -47,6 +47,7 @@ func NewLoginView(r *root) *loginView {
 	return ret
 }
 
+// login takes two parameters and tries to invoke
 func (lv *loginView) login(username, password string) {
 	// TODO: Check credentials
 }
