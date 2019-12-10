@@ -20,10 +20,10 @@ func NewLoginView(r *root) *loginView {
 
 	form := tview.NewForm()
 	form.SetBorder(true)
-	form.AddInputField("Gebruikersnaam", "", 50, nil, func(username string) {
+	form.AddInputField("Gebruikersnaam", "", 100, nil, func(username string) {
 		ret.username = username
 	})
-	form.AddPasswordField("Wachtwoord", "", 50, rune(42), func(password string) {
+	form.AddPasswordField("Wachtwoord", "", 100, rune(42), func(password string) {
 		ret.password = password
 	})
 	form.AddButton("Login", func() {
