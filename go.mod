@@ -3,6 +3,8 @@ module github.com/MrDienns/bike-commerce
 go 1.13
 
 require (
+	github.com/SermoDigital/jose v0.9.1
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gdamore/tcell v1.3.0
 	github.com/go-chi/chi v4.0.2+incompatible
 	github.com/mitchellh/go-homedir v1.1.0

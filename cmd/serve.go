@@ -1,7 +1,12 @@
 package cmd
 
 import (
+	"io/ioutil"
 	"os"
+
+	"github.com/SermoDigital/jose/crypto"
+
+	"github.com/spf13/viper"
 
 	"github.com/MrDienns/bike-commerce/pkg/api"
 	"github.com/spf13/cobra"
@@ -17,7 +22,20 @@ var (
 			logger, _ := zap.NewDevelopment()
 			defer logger.Sync()
 
-			server := api.NewServer(logger)
+			keyFile := viper.GetString("security.public_key")
+			keyb, err := ioutil.ReadFile(keyFile)
+			if err != nil {
+				logger.Error(err.Error())
+				os.Exit(1)
+			}
+
+			key, err := crypto.ParseRSAPublicKeyFromPEM(keyb)
+			if err != nil {
+				logger.Error(err.Error())
+				os.Exit(1)
+			}
+
+			server := api.NewServer(logger, key)
 			if err := server.Start(); err != nil {
 				logger.Error(err.Error())
 				os.Exit(1)
