@@ -4,6 +4,8 @@ import (
 	"crypto/rsa"
 	"net/http"
 
+	"github.com/MrDienns/bike-commerce/pkg/api/model"
+
 	"github.com/MrDienns/bike-commerce/pkg/api/middleware"
 
 	"go.uber.org/zap"
@@ -33,17 +35,17 @@ func (u *User) Routes() *chi.Mux {
 }
 
 func (u *User) GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user.username").(string)))
+	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
 }
 
 func (u *User) CreateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user.username").(string)))
+	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
 }
 
 func (u *User) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user.username").(string)))
+	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
 }
 
 func (u *User) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user.username").(string)))
+	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
 }
