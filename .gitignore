@@ -5,8 +5,5 @@
 /bike-commerce
 /bike-commerce.exe
 
-# Encryption keys
-*.pem
-
 # Config files
 *.toml
