@@ -17,5 +17,7 @@ services:
       MYSQL_DATABASE: bike-commerce
       MYSQL_USER: bike
       MYSQL_PASSWORD: commerce
+    volumes:
+      - ./import:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
