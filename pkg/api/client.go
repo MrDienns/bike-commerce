@@ -35,3 +35,23 @@ func (c *Client) UpdateUser(user *model.User) error {
 func (c *Client) DeleteUser(user *model.User) error {
 	return nil
 }
+
+// GetBikes invokes the rest API and returns all bikes.
+func (c *Client) GetBikes() ([]*model.Bike, error) {
+	return make([]*model.Bike, 0), nil
+}
+
+// GetBike invokes the rest API with the passed bike ID and returns the bike.
+func (c *Client) GetBike(id string) (*model.Bike, error) {
+	return &model.Bike{}, nil
+}
+
+// UpdateBike takes a bike as argument and updates it by invoking the rest API.
+func (c *Client) UpdateBike(bike *model.Bike) error {
+	return nil
+}
+
+// DeleteBike takes a bike as argument and deletes it by invoking the rest API.
+func (c *Client) DeleteBike(bike *model.Bike) error {
+	return nil
+}
