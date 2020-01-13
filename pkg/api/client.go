@@ -2,6 +2,7 @@ package api
 
 import "github.com/MrDienns/bike-commerce/pkg/api/model"
 
+// Client is the rest API client.
 type Client struct {
 	token string
 }
