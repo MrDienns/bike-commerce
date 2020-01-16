@@ -4,6 +4,8 @@ import (
 	"crypto/rsa"
 	"net/http"
 
+	"github.com/MrDienns/bike-commerce/pkg/database"
+
 	"github.com/MrDienns/bike-commerce/pkg/api/model"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/middleware"
@@ -14,12 +16,13 @@ import (
 )
 
 type User struct {
-	logger *zap.Logger
-	key    *rsa.PublicKey
+	logger   *zap.Logger
+	key      *rsa.PublicKey
+	userRepo database.Connector
 }
 
-func NewUser(logger *zap.Logger, key *rsa.PublicKey) *User {
-	return &User{logger, key}
+func NewUser(logger *zap.Logger, key *rsa.PublicKey, userRepo database.Connector) *User {
+	return &User{logger, key, userRepo}
 }
 
 func (u *User) Routes() *chi.Mux {

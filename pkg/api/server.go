@@ -4,6 +4,8 @@ import (
 	"crypto/rsa"
 	"net/http"
 
+	"github.com/MrDienns/bike-commerce/pkg/database"
+
 	"github.com/MrDienns/bike-commerce/pkg/api/middleware"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/controller"
@@ -15,12 +17,15 @@ import (
 )
 
 type Server struct {
-	logger *zap.Logger
-	key    *rsa.PublicKey
+	logger     *zap.Logger
+	publickey  *rsa.PublicKey
+	privatekey *rsa.PrivateKey
+	connector  database.Connector
 }
 
-func NewServer(logger *zap.Logger, key *rsa.PublicKey) *Server {
-	return &Server{logger, key}
+func NewServer(logger *zap.Logger, publickey *rsa.PublicKey, privatekey *rsa.PrivateKey,
+	connector database.Connector) *Server {
+	return &Server{logger, publickey, privatekey, connector}
 }
 
 func (s *Server) Start() error {
@@ -37,7 +42,7 @@ func (s *Server) Start() error {
 
 func (s *Server) Routes() *chi.Mux {
 	r := chi.NewRouter()
-	r.Mount("/user", controller.NewUser(s.logger, s.key).Routes())
-	r.Mount("/authenticate", controller.NewAuthenticate(s.logger).Routes())
+	r.Mount("/user", controller.NewUser(s.logger, s.publickey, s.connector).Routes())
+	r.Mount("/authenticate", controller.NewAuthenticate(s.logger, s.publickey, s.privatekey, s.connector).Routes())
 	return r
 }

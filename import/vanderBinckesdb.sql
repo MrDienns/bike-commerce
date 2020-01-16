@@ -124,8 +124,9 @@ INSERT INTO `klant` (`klantnummer`, `naam`, `voornaam`, `postcode`, `huisnummer`
 
 CREATE TABLE `medewerker` (
   `medewerkernummer` int(11) NOT NULL,
-  `achternaam` varchar(45) DEFAULT NULL,
-  `voornaam` varchar(20) DEFAULT NULL,
+  `naam` varchar(45) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `wachtwoord` varchar(255) DEFAULT NULL,
   `datum_in_dienst` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -133,13 +134,13 @@ CREATE TABLE `medewerker` (
 -- Dumping data for table `medewerker`
 --
 
-INSERT INTO `medewerker` (`medewerkernummer`, `achternaam`, `voornaam`, `datum_in_dienst`) VALUES
-(1, 'Jansen', 'Bas', '2018-05-21'),
-(2, 'Rademakers', 'Vincent', '2017-09-01'),
-(3, 'Heiden, van der', 'Karel', '2018-05-30'),
-(4, 'Kraymans', 'Irene', '2017-09-01'),
-(5, 'Boer, de', 'Francine', '2018-07-01'),
-(6, 'Velzenmaker', 'Jaap', '2017-11-01');
+INSERT INTO `medewerker` (`medewerkernummer`, `naam`, `email`, `wachtwoord`, `datum_in_dienst`) VALUES
+(1, 'Bas Jansen', 'bas@@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2018-05-21'),
+(2, 'Vincent Rademakers', 'vincent@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2017-09-01'),
+(3, 'Karel van der Heiden', 'karel@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2018-05-30'),
+(4, 'Irene Kraymans', 'irene@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2017-09-01'),
+(5, 'Francine de Boer', 'francine@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2018-07-01'),
+(6, 'Jaap Velzenmaker', 'jaap@vanderbinckes.nl', '5baa61e4c9b93f3f0682250b6cf8331b7ee68fd8', '2017-11-01');
 
 -- --------------------------------------------------------
 
