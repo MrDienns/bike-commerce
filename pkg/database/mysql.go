@@ -72,3 +72,41 @@ func (m *MySQL) UserFromCredentials(email, password string) *model.User {
 		Roles: []string{}, // TODO
 	}
 }
+
+func (m *MySQL) GetCustomer(id int) *model.Customer {
+	row := m.Connection.QueryRow("SELECT * FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
+	if row == nil {
+		return nil
+	}
+
+	var lastname, firstname, postalcode, housenumberAddition, comment string
+	var housenumber int
+
+	err := row.Scan(&id, &lastname, &firstname, &postalcode, &housenumber, &housenumberAddition, &comment)
+	if err != nil {
+		fmt.Println(err.Error())
+		return nil
+	}
+
+	return &model.Customer{
+		ID:                  id,
+		Firstname:           firstname,
+		Lastname:            lastname,
+		Postalcode:          postalcode,
+		Housenumber:         housenumber,
+		HousenumberAddition: housenumberAddition,
+		Comment:             comment,
+	}
+}
+
+func (m *MySQL) CreateCustomer(customer *model.Customer) {
+
+}
+
+func (m *MySQL) UpdateCustomer(customer *model.Customer) {
+
+}
+
+func (m *MySQL) DeleteCustomer(customer *model.Customer) {
+
+}

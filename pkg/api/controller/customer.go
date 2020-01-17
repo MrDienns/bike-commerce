@@ -2,7 +2,9 @@ package controller
 
 import (
 	"crypto/rsa"
+	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/middleware"
 
@@ -37,7 +39,10 @@ func (c *Customer) Routes() *chi.Mux {
 }
 
 func (c *Customer) GetCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	customer := c.customerRepo.GetCustomer(id)
+	response, _ := json.Marshal(customer)
+	w.Write(response)
 }
 
 func (c *Customer) CreateCustomer(w http.ResponseWriter, r *http.Request) {
