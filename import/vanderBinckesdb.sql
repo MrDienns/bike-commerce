@@ -77,12 +77,12 @@ INSERT INTO `bakfiets` (`bakfietsnummer`, `naam`, `type`, `huurprijs`, `aantal`,
 
 CREATE TABLE `klant` (
   `klantnummer` int(11) NOT NULL,
-  `naam` varchar(45) DEFAULT NULL,
-  `voornaam` varchar(15) DEFAULT NULL,
+  `naam` varchar(45) DEFAULT '',
+  `voornaam` varchar(15) DEFAULT '',
   `postcode` varchar(6) NOT NULL,
   `huisnummer` int(11) NOT NULL,
-  `huisnummer_toevoeging` varchar(5) DEFAULT NULL,
-  `opmerkingen` varchar(100) DEFAULT NULL
+  `huisnummer_toevoeging` varchar(5) DEFAULT '',
+  `opmerkingen` varchar(100) DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -90,31 +90,31 @@ CREATE TABLE `klant` (
 --
 
 INSERT INTO `klant` (`klantnummer`, `naam`, `voornaam`, `postcode`, `huisnummer`, `huisnummer_toevoeging`, `opmerkingen`) VALUES
-(1, 'Sharp', 'Leo', '1999XB', 10, 'a', NULL),
-(2, 'Long', 'George', '1999XB', 84, NULL, NULL),
-(3, 'Caouette', 'Coby', '1019BY', 60, NULL, ''),
-(4, 'Donatelli', 'Sean', '1019BY', 97, NULL, NULL),
-(5, 'Guyer', 'Rachael', '1019BY', 3, NULL, NULL),
-(6, 'Perilloux', 'Ike', '6931NX', 76, NULL, NULL),
-(7, 'Linhart', 'Ciara', '6931NX', 13, NULL, NULL),
-(8, 'Francis', 'Oscar', '2691UQ', 27, NULL, NULL),
-(9, 'Stannard', 'Gillian', '6591FR', 77, NULL, NULL),
-(10, 'Zapetis', 'Rasmus', '6591FR', 94, NULL, NULL),
-(11, 'Anderson', 'Mariska', '6591FR', 54, NULL, NULL),
-(12, 'Kuehn', 'Jurre', '2532VL', 26, NULL, ''),
-(13, 'Gonzalez', 'Luis', '2532VM', 96, NULL, NULL),
-(14, 'Stevens', 'Maja', '7176NU', 66, NULL, NULL),
-(15, 'Sterrett', 'Scotty', '7176NU', 25, NULL, NULL),
-(16, 'Schubert', 'Charlotte', '7668WA', 16, NULL, NULL),
-(17, 'Beckbau', 'Sophia', '7668WA', 64, NULL, NULL),
-(18, 'Goodman', 'Rachael', '6173XD', 37, NULL, NULL),
-(19, 'Love', 'Luis', '6173XD', 84, NULL, NULL),
-(20, 'Hedgecock', 'Sophia', '6173XD', 28, NULL, NULL),
-(21, 'Brennan', 'Lara', '3440JV', 64, NULL, NULL),
-(22, 'Pengilly', 'Jurre', '3440JV', 52, NULL, ''),
-(23, 'Noteboom', 'Vanessa', '7290ZN', 35, NULL, NULL),
-(24, 'Daley', 'Barbara', '1952FB', 93, NULL, NULL),
-(25, 'Bruno', 'Cloe', '1952FB', 79, NULL, NULL);
+(1, 'Sharp', 'Leo', '1999XB', 10, 'a', ''),
+(2, 'Long', 'George', '1999XB', 84, '', ''),
+(3, 'Caouette', 'Coby', '1019BY', 60, '', ''),
+(4, 'Donatelli', 'Sean', '1019BY', 97, '', ''),
+(5, 'Guyer', 'Rachael', '1019BY', 3, '', ''),
+(6, 'Perilloux', 'Ike', '6931NX', 76, '', ''),
+(7, 'Linhart', 'Ciara', '6931NX', 13, '', ''),
+(8, 'Francis', 'Oscar', '2691UQ', 27, '', ''),
+(9, 'Stannard', 'Gillian', '6591FR', 77, '', ''),
+(10, 'Zapetis', 'Rasmus', '6591FR', 94, '', ''),
+(11, 'Anderson', 'Mariska', '6591FR', 54, '', ''),
+(12, 'Kuehn', 'Jurre', '2532VL', 26, '', ''),
+(13, 'Gonzalez', 'Luis', '2532VM', 96, '', ''),
+(14, 'Stevens', 'Maja', '7176NU', 66, '', ''),
+(15, 'Sterrett', 'Scotty', '7176NU', 25, '', ''),
+(16, 'Schubert', 'Charlotte', '7668WA', 16, '', ''),
+(17, 'Beckbau', 'Sophia', '7668WA', 64, '', ''),
+(18, 'Goodman', 'Rachael', '6173XD', 37, '', ''),
+(19, 'Love', 'Luis', '6173XD', 84, '', ''),
+(20, 'Hedgecock', 'Sophia', '6173XD', 28, '', ''),
+(21, 'Brennan', 'Lara', '3440JV', 64, '', ''),
+(22, 'Pengilly', 'Jurre', '3440JV', 52, '', ''),
+(23, 'Noteboom', 'Vanessa', '7290ZN', 35, '', ''),
+(24, 'Daley', 'Barbara', '1952FB', 93, '', ''),
+(25, 'Bruno', 'Cloe', '1952FB', 79, '', '');
 
 -- --------------------------------------------------------
 
@@ -124,10 +124,10 @@ INSERT INTO `klant` (`klantnummer`, `naam`, `voornaam`, `postcode`, `huisnummer`
 
 CREATE TABLE `medewerker` (
   `medewerkernummer` int(11) NOT NULL,
-  `naam` varchar(45) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `wachtwoord` varchar(255) DEFAULT NULL,
-  `datum_in_dienst` date DEFAULT NULL
+  `naam` varchar(45) DEFAULT '',
+  `email` varchar(255) DEFAULT '',
+  `wachtwoord` varchar(255) DEFAULT '',
+  `datum_in_dienst` date DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --

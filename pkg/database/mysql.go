@@ -84,7 +84,6 @@ func (m *MySQL) GetCustomer(id int) *model.Customer {
 
 	err := row.Scan(&id, &lastname, &firstname, &postalcode, &housenumber, &housenumberAddition, &comment)
 	if err != nil {
-		fmt.Println(err.Error())
 		return nil
 	}
 
