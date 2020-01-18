@@ -46,7 +46,12 @@ func (c *Customer) GetCustomer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Customer) CreateCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	var customer model.Customer
+	var data []byte
+	r.Body.Read(data)
+	json.Unmarshal(data, &customer)
+	c.customerRepo.CreateCustomer(&customer)
+	w.Write([]byte{})
 }
 
 func (c *Customer) UpdateCustomer(w http.ResponseWriter, r *http.Request) {

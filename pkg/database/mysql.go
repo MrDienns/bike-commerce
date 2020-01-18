@@ -99,7 +99,8 @@ func (m *MySQL) GetCustomer(id int) *model.Customer {
 }
 
 func (m *MySQL) CreateCustomer(customer *model.Customer) {
-
+	m.Connection.Exec("INSERT INTO klant (naam, voornaam, postcode, huisnummer, huisnummer_toevoeging, opmerkingen) VALUES (?, ?, ?, ?, ?, ?)",
+		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
 }
 
 func (m *MySQL) UpdateCustomer(customer *model.Customer) {
