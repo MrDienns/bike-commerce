@@ -55,9 +55,16 @@ func (c *Customer) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *Customer) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	var customer model.Customer
+	var data []byte
+	r.Body.Read(data)
+	json.Unmarshal(data, &customer)
+	c.customerRepo.UpdateCustomer(&customer)
+	w.Write([]byte{})
 }
 
 func (c *Customer) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	c.customerRepo.DeleteCustomer(id)
+	w.Write([]byte{})
 }

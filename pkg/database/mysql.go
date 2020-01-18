@@ -104,9 +104,10 @@ func (m *MySQL) CreateCustomer(customer *model.Customer) {
 }
 
 func (m *MySQL) UpdateCustomer(customer *model.Customer) {
-
+	m.Connection.Exec("UPDATE klant SET naam = (?), voornaam = (?), postcode = (?), huisnummer = (?), huisnummer_toevoeging = (?), opmerkingen = (?) LIMIT 1;",
+		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
 }
 
-func (m *MySQL) DeleteCustomer(customer *model.Customer) {
-
+func (m *MySQL) DeleteCustomer(id int) {
+	m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
 }

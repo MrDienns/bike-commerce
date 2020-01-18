@@ -12,5 +12,5 @@ type Connector interface {
 	GetCustomer(id int) *model.Customer
 	CreateCustomer(customer *model.Customer)
 	UpdateCustomer(customer *model.Customer)
-	DeleteCustomer(customer *model.Customer)
+	DeleteCustomer(id int)
 }
