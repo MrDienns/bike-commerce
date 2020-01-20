@@ -9,8 +9,8 @@ type Connector interface {
 
 	UserFromCredentials(email, password string) *model.User
 
-	GetCustomer(id int) *model.Customer
-	CreateCustomer(customer *model.Customer)
-	UpdateCustomer(customer *model.Customer)
-	DeleteCustomer(id int)
+	GetCustomer(id int) (*model.Customer, error)
+	CreateCustomer(customer *model.Customer) error
+	UpdateCustomer(customer *model.Customer) error
+	DeleteCustomer(id int) error
 }

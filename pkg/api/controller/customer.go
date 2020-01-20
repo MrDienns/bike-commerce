@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/MrDienns/bike-commerce/pkg/api/response"
+
 	"github.com/MrDienns/bike-commerce/pkg/api/middleware"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/model"
@@ -40,31 +42,49 @@ func (c *Customer) Routes() *chi.Mux {
 
 func (c *Customer) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	customer := c.customerRepo.GetCustomer(id)
-	response, _ := json.Marshal(customer)
-	w.Write(response)
+	customer, err := c.customerRepo.GetCustomer(id)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	resp, _ := json.Marshal(customer)
+	w.Write(resp)
 }
 
 func (c *Customer) CreateCustomer(w http.ResponseWriter, r *http.Request) {
+
+	decoder := json.NewDecoder(r.Body)
 	var customer model.Customer
-	var data []byte
-	r.Body.Read(data)
-	json.Unmarshal(data, &customer)
-	c.customerRepo.CreateCustomer(&customer)
+	decoder.Decode(&customer)
+
+	err := c.customerRepo.CreateCustomer(&customer)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
 	w.Write([]byte{})
 }
 
 func (c *Customer) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
+
+	decoder := json.NewDecoder(r.Body)
 	var customer model.Customer
-	var data []byte
-	r.Body.Read(data)
-	json.Unmarshal(data, &customer)
-	c.customerRepo.UpdateCustomer(&customer)
+	decoder.Decode(&customer)
+
+	err := c.customerRepo.UpdateCustomer(&customer)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
 	w.Write([]byte{})
 }
 
 func (c *Customer) DeleteCustomer(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
-	c.customerRepo.DeleteCustomer(id)
+	err := c.customerRepo.DeleteCustomer(id)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
 	w.Write([]byte{})
 }

@@ -73,10 +73,10 @@ func (m *MySQL) UserFromCredentials(email, password string) *model.User {
 	}
 }
 
-func (m *MySQL) GetCustomer(id int) *model.Customer {
+func (m *MySQL) GetCustomer(id int) (*model.Customer, error) {
 	row := m.Connection.QueryRow("SELECT * FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
 	if row == nil {
-		return nil
+		return nil, fmt.Errorf("Customer does not exist")
 	}
 
 	var lastname, firstname, postalcode, housenumberAddition, comment string
@@ -84,7 +84,7 @@ func (m *MySQL) GetCustomer(id int) *model.Customer {
 
 	err := row.Scan(&id, &lastname, &firstname, &postalcode, &housenumber, &housenumberAddition, &comment)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	return &model.Customer{
@@ -95,19 +95,26 @@ func (m *MySQL) GetCustomer(id int) *model.Customer {
 		Housenumber:         housenumber,
 		HousenumberAddition: housenumberAddition,
 		Comment:             comment,
-	}
+	}, nil
 }
 
-func (m *MySQL) CreateCustomer(customer *model.Customer) {
-	m.Connection.Exec("INSERT INTO klant (naam, voornaam, postcode, huisnummer, huisnummer_toevoeging, opmerkingen) VALUES (?, ?, ?, ?, ?, ?)",
+func (m *MySQL) CreateCustomer(customer *model.Customer) error {
+	row := m.Connection.QueryRow("SELECT MAX(klantnummer) FROM klant")
+	var id = 0
+	row.Scan(&id)
+
+	_, err := m.Connection.Exec("INSERT INTO klant (klantnummer, naam, voornaam, postcode, huisnummer, huisnummer_toevoeging, opmerkingen) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		id+1, customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
+	return err
+}
+
+func (m *MySQL) UpdateCustomer(customer *model.Customer) error {
+	_, err := m.Connection.Exec("UPDATE klant SET naam = (?), voornaam = (?), postcode = (?), huisnummer = (?), huisnummer_toevoeging = (?), opmerkingen = (?) LIMIT 1;",
 		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
+	return err
 }
 
-func (m *MySQL) UpdateCustomer(customer *model.Customer) {
-	m.Connection.Exec("UPDATE klant SET naam = (?), voornaam = (?), postcode = (?), huisnummer = (?), huisnummer_toevoeging = (?), opmerkingen = (?) LIMIT 1;",
-		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
-}
-
-func (m *MySQL) DeleteCustomer(id int) {
-	m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
+func (m *MySQL) DeleteCustomer(id int) error {
+	_, err := m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
+	return err
 }
