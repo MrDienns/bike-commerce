@@ -69,7 +69,6 @@ func (m *MySQL) UserFromCredentials(email, password string) *model.User {
 		Id:    id,
 		Name:  name,
 		Email: email,
-		Roles: []string{}, // TODO
 	}
 }
 
@@ -116,5 +115,47 @@ func (m *MySQL) UpdateCustomer(customer *model.Customer) error {
 
 func (m *MySQL) DeleteCustomer(id int) error {
 	_, err := m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
+	return err
+}
+
+func (m *MySQL) GetUser(id int) (*model.User, error) {
+	row := m.Connection.QueryRow("SELECT * FROM medewerker WHERE medewerkernummer = (?) LIMIT 1;", id)
+	if row == nil {
+		return nil, fmt.Errorf("User does not exist")
+	}
+
+	var name, email, employmentDate string
+
+	err := row.Scan(&id, &name, &email, &employmentDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.User{
+		Id:             id,
+		Name:           name,
+		Email:          email,
+		EmploymentDate: employmentDate,
+	}, nil
+}
+
+func (m *MySQL) CreateUser(user *model.User) error {
+	row := m.Connection.QueryRow("SELECT MAX(medewerkernummer) FROM medewerker")
+	var id = 0
+	row.Scan(&id)
+
+	_, err := m.Connection.Exec("INSERT INTO medewerker (medewerkernummer, naam, email, datum_in_dienst) VALUES (?, ?, ?, ?)",
+		id+1, user.Name, user.Email, user.EmploymentDate)
+	return err
+}
+
+func (m *MySQL) UpdateUser(user *model.User) error {
+	_, err := m.Connection.Exec("UPDATE medewerker SET naam = (?), email = (?), datum_in_dienst = (?) WHERE medewerkernummer = (?) LIMIT 1;",
+		user.Name, user.Email, user.EmploymentDate, user.Id)
+	return err
+}
+
+func (m *MySQL) DeleteUser(id int) error {
+	_, err := m.Connection.Exec("DELETE FROM medewerker WHERE medewerkernummer = (?) LIMIT 1;", id)
 	return err
 }

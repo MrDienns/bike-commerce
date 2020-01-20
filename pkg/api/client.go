@@ -1,15 +1,25 @@
 package api
 
-import "github.com/MrDienns/bike-commerce/pkg/api/model"
+import (
+	"encoding/json"
+	"fmt"
+	"io"
+	"net/http"
+
+	"github.com/MrDienns/bike-commerce/pkg/api/response"
+
+	"github.com/MrDienns/bike-commerce/pkg/api/model"
+)
 
 // Client is the rest API client.
 type Client struct {
-	token string
+	token    string
+	endpoint string
 }
 
 // NewClient accepts a token and returns a new *Client
-func NewClient(token string) *Client {
-	return &Client{token: token}
+func NewClient(token, endpoint string) *Client {
+	return &Client{token: token, endpoint: endpoint}
 }
 
 // CreateUser accepts a user and invokes the rest API to create it.
@@ -55,4 +65,58 @@ func (c *Client) UpdateBike(bike *model.Bike) error {
 // DeleteBike takes a bike as argument and deletes it by invoking the rest API.
 func (c *Client) DeleteBike(bike *model.Bike) error {
 	return nil
+}
+
+func (c *Client) invoke(url, method string, responseObj *interface{}) error {
+	client := &http.Client{}
+	var reader io.Reader
+	request, err := http.NewRequest(fmt.Sprintf("%s%s", c.endpoint, url), method, reader)
+	if err != nil {
+		return err
+	}
+	httpResponse, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	if httpResponse.StatusCode != 200 {
+		var errorResponse response.Error
+		err = unmarshalResponse(httpResponse.Body, &errorResponse)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf(errorResponse.Message)
+	}
+
+	return unmarshalResponse(httpResponse.Body, responseObj)
+}
+
+func (c *Client) invokeEmpty(url, method string) error {
+	client := &http.Client{}
+	var reader io.Reader
+	request, err := http.NewRequest(fmt.Sprintf("%s%s", c.endpoint, url), method, reader)
+	if err != nil {
+		return err
+	}
+	httpResponse, err := client.Do(request)
+	if err != nil {
+		return err
+	}
+	if httpResponse.StatusCode != 200 {
+		var errorResponse response.Error
+		err = unmarshalResponse(httpResponse.Body, &errorResponse)
+		if err != nil {
+			return err
+		}
+		return fmt.Errorf(errorResponse.Message)
+	}
+	return nil
+}
+
+func unmarshalResponse(reader io.Reader, response interface{}) error {
+	var bytes []byte
+	_, err := reader.Read(bytes)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(bytes, response)
 }

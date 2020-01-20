@@ -2,7 +2,11 @@ package controller
 
 import (
 	"crypto/rsa"
+	"encoding/json"
 	"net/http"
+	"strconv"
+
+	"github.com/MrDienns/bike-commerce/pkg/api/response"
 
 	"github.com/MrDienns/bike-commerce/pkg/database"
 
@@ -38,17 +42,54 @@ func (u *User) Routes() *chi.Mux {
 }
 
 func (u *User) GetUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	user, err := u.userRepo.GetUser(id)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	resp, _ := json.Marshal(user)
+	w.Write(resp)
 }
 
 func (u *User) CreateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+
+	decoder := json.NewDecoder(r.Body)
+	var user model.User
+	decoder.Decode(&user)
+
+	err := u.userRepo.CreateUser(&user)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	w.Write([]byte{})
 }
 
 func (u *User) UpdateUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+
+	decoder := json.NewDecoder(r.Body)
+	var user model.User
+	decoder.Decode(&user)
+
+	user.Id = id
+
+	err := u.userRepo.UpdateUser(&user)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	w.Write([]byte{})
 }
 
 func (u *User) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(r.Context().Value("session.user").(*model.User).Name))
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+	err := u.userRepo.DeleteUser(id)
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	w.Write([]byte{})
 }
