@@ -109,8 +109,8 @@ func (m *MySQL) CreateCustomer(customer *model.Customer) error {
 }
 
 func (m *MySQL) UpdateCustomer(customer *model.Customer) error {
-	_, err := m.Connection.Exec("UPDATE klant SET naam = (?), voornaam = (?), postcode = (?), huisnummer = (?), huisnummer_toevoeging = (?), opmerkingen = (?) LIMIT 1;",
-		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment)
+	_, err := m.Connection.Exec("UPDATE klant SET naam = (?), voornaam = (?), postcode = (?), huisnummer = (?), huisnummer_toevoeging = (?), opmerkingen = (?) WHERE klantnummer = (?) LIMIT 1;",
+		customer.Lastname, customer.Firstname, customer.Postalcode, customer.Housenumber, customer.HousenumberAddition, customer.Comment, customer.ID)
 	return err
 }
 

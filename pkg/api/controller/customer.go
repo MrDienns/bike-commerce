@@ -67,9 +67,13 @@ func (c *Customer) CreateCustomer(w http.ResponseWriter, r *http.Request) {
 
 func (c *Customer) UpdateCustomer(w http.ResponseWriter, r *http.Request) {
 
+	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
+
 	decoder := json.NewDecoder(r.Body)
 	var customer model.Customer
 	decoder.Decode(&customer)
+
+	customer.ID = id
 
 	err := c.customerRepo.UpdateCustomer(&customer)
 	if err != nil {
