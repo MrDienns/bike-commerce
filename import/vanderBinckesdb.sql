@@ -127,7 +127,7 @@ CREATE TABLE `medewerker` (
   `naam` varchar(45) DEFAULT '',
   `email` varchar(255) DEFAULT '',
   `wachtwoord` varchar(255) DEFAULT '',
-  `datum_in_dienst` date DEFAULT ''
+  `datum_in_dienst` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
