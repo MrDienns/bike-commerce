@@ -159,3 +159,49 @@ func (m *MySQL) DeleteUser(id int) error {
 	_, err := m.Connection.Exec("DELETE FROM medewerker WHERE medewerkernummer = (?) LIMIT 1;", id)
 	return err
 }
+
+func (m *MySQL) GetBike(id int) (*model.Bike, error) {
+	row := m.Connection.QueryRow("SELECT * FROM bakfiets WHERE bakfietsnummer = (?) LIMIT 1;", id)
+	if row == nil {
+		return nil, fmt.Errorf("Bike does not exist")
+	}
+
+	var price float32
+	var quantity, amountRented int
+	var name, bikeType string
+
+	err := row.Scan(&id, &name, &bikeType, &price, &quantity, &amountRented)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Bike{
+		ID:           id,
+		Name:         name,
+		Type:         bikeType,
+		Price:        price,
+		Quantity:     quantity,
+		AmountRented: amountRented,
+	}, nil
+}
+
+func (m *MySQL) CreateBike(bike *model.Bike) error {
+	row := m.Connection.QueryRow("SELECT MAX(bakfietsnummer) FROM bakfiets")
+	var id = 0
+	row.Scan(&id)
+
+	_, err := m.Connection.Exec("INSERT INTO bakfiets (bakfietsnummer, naam, type, huurprijs, aantal, aantal_verhuurd) VALUES (?, ?, ?, ?, ?, ?)",
+		id+1, bike.Name, bike.Type, bike.Price, bike.Quantity, bike.AmountRented)
+	return err
+}
+
+func (m *MySQL) UpdateBike(bike *model.Bike) error {
+	_, err := m.Connection.Exec("UPDATE bakfiets SET naam = (?), type = (?), huurprijs = (?), aantal = (?), aantal_verhuurd (?) WHERE bakfietsnummer = (?) LIMIT 1;",
+		bike.Name, bike.Type, bike.Price, bike.Quantity, bike.AmountRented, bike.ID)
+	return err
+}
+
+func (m *MySQL) DeleteBike(id int) error {
+	_, err := m.Connection.Exec("DELETE FROM bakfiets WHERE bakfietsnummer = (?) LIMIT 1;", id)
+	return err
+}

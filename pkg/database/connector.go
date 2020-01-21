@@ -18,4 +18,9 @@ type Connector interface {
 	CreateUser(user *model.User) error
 	UpdateUser(user *model.User) error
 	DeleteUser(id int) error
+
+	GetBike(id int) (*model.Bike, error)
+	CreateBike(bike *model.Bike) error
+	UpdateBike(bike *model.Bike) error
+	DeleteBike(id int) error
 }
