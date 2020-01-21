@@ -34,10 +34,21 @@ func (c *Customer) Routes() *chi.Mux {
 	r.Use(middleware.NewJWT(c.key).Handle)
 
 	r.Post("/", c.CreateCustomer)
+	r.Get("/", c.GetCustomers)
 	r.Get("/{id}", c.GetCustomer)
 	r.Put("/{id}", c.UpdateCustomer)
 	r.Delete("/{id}", c.DeleteCustomer)
 	return r
+}
+
+func (c *Customer) GetCustomers(w http.ResponseWriter, r *http.Request) {
+	customers, err := c.customerRepo.GetCustomers()
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	resp, _ := json.Marshal(customers)
+	w.Write(resp)
 }
 
 func (c *Customer) GetCustomer(w http.ResponseWriter, r *http.Request) {

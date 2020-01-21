@@ -31,10 +31,21 @@ func (b *Bike) Routes() *chi.Mux {
 	r.Use(middleware.NewJWT(b.key).Handle)
 
 	r.Post("/", b.CreateBike)
+	r.Get("/", b.GetBikes)
 	r.Get("/{id}", b.GetBike)
 	r.Put("/{id}", b.UpdateBike)
 	r.Delete("/{id}", b.DeleteBike)
 	return r
+}
+
+func (b *Bike) GetBikes(w http.ResponseWriter, r *http.Request) {
+	bikes, err := b.bikeRepo.GetBikes()
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	resp, _ := json.Marshal(bikes)
+	w.Write(resp)
 }
 
 func (b *Bike) GetBike(w http.ResponseWriter, r *http.Request) {

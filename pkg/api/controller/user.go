@@ -35,10 +35,21 @@ func (u *User) Routes() *chi.Mux {
 	r.Use(middleware.NewJWT(u.key).Handle)
 
 	r.Post("/", u.CreateUser)
+	r.Get("/", u.GetUsers)
 	r.Get("/{id}", u.GetUser)
 	r.Put("/{id}", u.UpdateUser)
 	r.Delete("/{id}", u.DeleteUser)
 	return r
+}
+
+func (u *User) GetUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := u.userRepo.GetCustomers()
+	if err != nil {
+		response.WriteError(w, err.Error(), 500)
+		return
+	}
+	resp, _ := json.Marshal(users)
+	w.Write(resp)
 }
 
 func (u *User) GetUser(w http.ResponseWriter, r *http.Request) {

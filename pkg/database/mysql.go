@@ -72,6 +72,38 @@ func (m *MySQL) UserFromCredentials(email, password string) *model.User {
 	}
 }
 
+func (m *MySQL) GetCustomers() ([]*model.Customer, error) {
+
+	result := make([]*model.Customer, 0)
+
+	rows, err := m.Connection.Query("SELECT * FROM klant")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+
+		var lastname, firstname, postalcode, housenumberAddition, comment string
+		var id, housenumber int
+
+		err := rows.Scan(&id, &lastname, &firstname, &postalcode, &housenumber, &housenumberAddition, &comment)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, &model.Customer{
+			ID:                  id,
+			Firstname:           firstname,
+			Lastname:            lastname,
+			Postalcode:          postalcode,
+			Housenumber:         housenumber,
+			HousenumberAddition: housenumberAddition,
+			Comment:             comment,
+		})
+	}
+
+	return result, nil
+}
+
 func (m *MySQL) GetCustomer(id int) (*model.Customer, error) {
 	row := m.Connection.QueryRow("SELECT * FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
 	if row == nil {
@@ -118,6 +150,35 @@ func (m *MySQL) DeleteCustomer(id int) error {
 	return err
 }
 
+func (m *MySQL) GetUsers() ([]*model.User, error) {
+
+	result := make([]*model.User, 0)
+
+	rows, err := m.Connection.Query("SELECT * FROM medewerker")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+
+		var id int
+		var name, email, employmentDate string
+
+		err := rows.Scan(&id, &name, &email, &employmentDate)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, &model.User{
+			Id:             id,
+			Name:           name,
+			Email:          email,
+			EmploymentDate: employmentDate,
+		})
+	}
+
+	return result, nil
+}
+
 func (m *MySQL) GetUser(id int) (*model.User, error) {
 	row := m.Connection.QueryRow("SELECT * FROM medewerker WHERE medewerkernummer = (?) LIMIT 1;", id)
 	if row == nil {
@@ -158,6 +219,38 @@ func (m *MySQL) UpdateUser(user *model.User) error {
 func (m *MySQL) DeleteUser(id int) error {
 	_, err := m.Connection.Exec("DELETE FROM medewerker WHERE medewerkernummer = (?) LIMIT 1;", id)
 	return err
+}
+
+func (m *MySQL) GetBikes() ([]*model.Bike, error) {
+
+	result := make([]*model.Bike, 0)
+
+	rows, err := m.Connection.Query("SELECT * FROM bakfiets")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+
+		var price float32
+		var id, quantity, amountRented int
+		var name, bikeType string
+
+		err := rows.Scan(&id, &name, &bikeType, &price, &quantity, &amountRented)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, &model.Bike{
+			ID:           id,
+			Name:         name,
+			Type:         bikeType,
+			Price:        price,
+			Quantity:     quantity,
+			AmountRented: amountRented,
+		})
+	}
+
+	return result, nil
 }
 
 func (m *MySQL) GetBike(id int) (*model.Bike, error) {

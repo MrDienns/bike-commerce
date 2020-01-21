@@ -9,16 +9,19 @@ type Connector interface {
 
 	UserFromCredentials(email, password string) *model.User
 
+	GetCustomers() ([]*model.Customer, error)
 	GetCustomer(id int) (*model.Customer, error)
 	CreateCustomer(customer *model.Customer) error
 	UpdateCustomer(customer *model.Customer) error
 	DeleteCustomer(id int) error
 
+	GetUsers() ([]*model.User, error)
 	GetUser(id int) (*model.User, error)
 	CreateUser(user *model.User) error
 	UpdateUser(user *model.User) error
 	DeleteUser(id int) error
 
+	GetBikes() ([]*model.Bike, error)
 	GetBike(id int) (*model.Bike, error)
 	CreateBike(bike *model.Bike) error
 	UpdateBike(bike *model.Bike) error
