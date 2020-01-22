@@ -1,9 +1,11 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/response"
@@ -13,13 +15,24 @@ import (
 
 // Client is the rest API client.
 type Client struct {
-	token    string
+	Token    string
 	endpoint string
 }
 
 // NewClient accepts a token and returns a new *Client
-func NewClient(token, endpoint string) *Client {
-	return &Client{token: token, endpoint: endpoint}
+func NewClient(endpoint string) *Client {
+	return &Client{endpoint: endpoint}
+}
+
+func (c *Client) Authenticate(email, password string) (*model.User, string, error) {
+
+	authRequest := &model.AuthRequest{Email: email, Password: password}
+	var authResponse response.AuthResponse
+	err := c.invoke("/api/authenticate", http.MethodPost, authRequest, &authResponse)
+	if err != nil {
+		return nil, "", err
+	}
+	return nil, authResponse.Token, nil
 }
 
 // CreateUser accepts a user and invokes the rest API to create it.
@@ -67,10 +80,16 @@ func (c *Client) DeleteBike(bike *model.Bike) error {
 	return nil
 }
 
-func (c *Client) invoke(url, method string, responseObj *interface{}) error {
+func (c *Client) invoke(url, method string, body, responseObj interface{}) error {
 	client := &http.Client{}
-	var reader io.Reader
-	request, err := http.NewRequest(fmt.Sprintf("%s%s", c.endpoint, url), method, reader)
+	b, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	buffer := bytes.NewBuffer(b)
+	request, err := http.NewRequest(method, fmt.Sprintf("%s%s", c.endpoint, url), buffer)
+	request.Header.Add("Content-Type", "application/json")
+	//defer request.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -80,14 +99,14 @@ func (c *Client) invoke(url, method string, responseObj *interface{}) error {
 	}
 	if httpResponse.StatusCode != 200 {
 		var errorResponse response.Error
-		err = unmarshalResponse(httpResponse.Body, &errorResponse)
+		err = unmarshalResponse(httpResponse, &errorResponse)
 		if err != nil {
 			return err
 		}
 		return fmt.Errorf(errorResponse.Message)
 	}
 
-	return unmarshalResponse(httpResponse.Body, responseObj)
+	return unmarshalResponse(httpResponse, responseObj)
 }
 
 func (c *Client) invokeEmpty(url, method string) error {
@@ -103,7 +122,7 @@ func (c *Client) invokeEmpty(url, method string) error {
 	}
 	if httpResponse.StatusCode != 200 {
 		var errorResponse response.Error
-		err = unmarshalResponse(httpResponse.Body, &errorResponse)
+		err = unmarshalResponse(httpResponse, &errorResponse)
 		if err != nil {
 			return err
 		}
@@ -112,11 +131,10 @@ func (c *Client) invokeEmpty(url, method string) error {
 	return nil
 }
 
-func unmarshalResponse(reader io.Reader, response interface{}) error {
-	var bytes []byte
-	_, err := reader.Read(bytes)
+func unmarshalResponse(httpResp *http.Response, response interface{}) error {
+	b, err := ioutil.ReadAll(httpResp.Body)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(bytes, response)
+	return json.Unmarshal(b, response)
 }

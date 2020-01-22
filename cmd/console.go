@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/MrDienns/bike-commerce/pkg/api"
+
 	"github.com/MrDienns/bike-commerce/internal/app/view"
 	"github.com/spf13/cobra"
 )
@@ -12,7 +14,7 @@ var (
 		Use:   "console",
 		Short: "Starts the console application",
 		Run: func(cmd *cobra.Command, args []string) {
-			screen := view.NewRoot()
+			screen := view.NewRoot(api.NewClient("http://localhost:8080"))
 			if err := screen.Start(); err != nil {
 				fmt.Printf("Failed to start application: %v\n", err)
 			}

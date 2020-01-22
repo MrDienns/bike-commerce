@@ -49,5 +49,10 @@ func NewLoginView(r *root) *loginView {
 
 // login takes two parameters and tries to invoke
 func (lv *loginView) login(username, password string) {
-	// TODO: Check credentials
+	_, token, err := lv.client.Authenticate(username, password)
+	if err != nil {
+		panic(err)
+	}
+	lv.client.Token = token
+	panic(token)
 }

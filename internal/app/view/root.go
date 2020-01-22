@@ -1,16 +1,21 @@
 package view
 
-import "github.com/rivo/tview"
+import (
+	"github.com/MrDienns/bike-commerce/pkg/api"
+	"github.com/rivo/tview"
+)
 
 // root is the highest level struct responsible for communicating with all underlying views.
 type root struct {
 	screen *tview.Application
 	login  *loginView
+	client *api.Client
 }
 
 // NewRoot creates and returns a new *root. It initialises a blank *tview.Application in the struct.
-func NewRoot() *root {
+func NewRoot(client *api.Client) *root {
 	return &root{
+		client: client,
 		screen: tview.NewApplication(),
 	}
 }

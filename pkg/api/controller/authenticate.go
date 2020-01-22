@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/MrDienns/bike-commerce/pkg/api/model"
+
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/response"
@@ -23,15 +25,6 @@ type Authenticate struct {
 	publickey  *rsa.PublicKey
 	privatekey *rsa.PrivateKey
 	connector  database.Connector
-}
-
-type authRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type authResponse struct {
-	Token string `json:"token"`
 }
 
 func NewAuthenticate(logger *zap.Logger, publickey *rsa.PublicKey, privatekey *rsa.PrivateKey,
@@ -54,7 +47,7 @@ func (a *Authenticate) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var authRequest authRequest
+	var authRequest model.AuthRequest
 	err = json.Unmarshal(body, &authRequest)
 	if err != nil {
 		response.WriteError(w, err.Error(), 422)
@@ -78,7 +71,7 @@ func (a *Authenticate) Login(w http.ResponseWriter, r *http.Request) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
 	tokenString, err := token.SignedString(a.privatekey)
 
-	responseBytes, _ := json.Marshal(&authResponse{Token: tokenString})
+	responseBytes, _ := json.Marshal(&response.AuthResponse{Token: tokenString})
 
 	w.Write(responseBytes)
 }
