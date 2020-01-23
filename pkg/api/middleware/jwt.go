@@ -3,15 +3,12 @@ package middleware
 import (
 	"context"
 	"crypto/rsa"
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"strings"
 
-	"github.com/MrDienns/bike-commerce/pkg/api/model"
+	"github.com/MrDienns/bike-commerce/pkg/util"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/response"
-	"github.com/dgrijalva/jwt-go"
 )
 
 // JWT is a struct in the controller package, which acts as an authentication middleware by parsing the JWT from the
@@ -35,7 +32,7 @@ func (m *JWT) Handle(next http.Handler) http.Handler {
 		}
 		tokenStr = strings.TrimPrefix(tokenStr, "Bearer ")
 
-		user, err := m.userFromToken(tokenStr)
+		user, err := util.UserFromToken(m.key, tokenStr)
 		if err != nil {
 			response.WriteError(w, err.Error(), 401)
 			return
@@ -46,36 +43,4 @@ func (m *JWT) Handle(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, "session.user", user)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
-}
-
-// userFromToken takes the token string and tries to transform it into a *model.User object.
-func (m *JWT) userFromToken(tokenStr string) (*model.User, error) {
-	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
-			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
-		}
-		return m.key, nil
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return nil, err
-	}
-
-	tokenJson, _ := json.Marshal(claims)
-
-	var user model.User
-	err = json.Unmarshal(tokenJson, &user)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = claims.Valid(); err != nil {
-		return nil, err
-	}
-
-	return &user, nil
 }
