@@ -7,7 +7,7 @@ type Connector interface {
 	Connect() error
 	Close() error
 
-	UserFromCredentials(email, password string) *model.User
+	UserFromCredentials(email, password string) (*model.User, error)
 
 	GetCustomers() ([]*model.Customer, error)
 	GetCustomer(id int) (*model.Customer, error)

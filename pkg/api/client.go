@@ -2,11 +2,14 @@ package api
 
 import (
 	"bytes"
+	"crypto/rsa"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+
+	"github.com/MrDienns/bike-commerce/pkg/util"
 
 	"github.com/MrDienns/bike-commerce/pkg/api/response"
 
@@ -16,12 +19,14 @@ import (
 // Client is the rest API client.
 type Client struct {
 	Token    string
+	User     *model.User
+	key      *rsa.PublicKey
 	endpoint string
 }
 
 // NewClient accepts a token and returns a new *Client
-func NewClient(endpoint string) *Client {
-	return &Client{endpoint: endpoint}
+func NewClient(key *rsa.PublicKey, endpoint string) *Client {
+	return &Client{key: key, endpoint: endpoint}
 }
 
 func (c *Client) Authenticate(email, password string) (*model.User, string, error) {
@@ -32,7 +37,16 @@ func (c *Client) Authenticate(email, password string) (*model.User, string, erro
 	if err != nil {
 		return nil, "", err
 	}
-	return nil, authResponse.Token, nil
+
+	user, err := util.UserFromToken(c.key, authResponse.Token)
+	if err != nil {
+		return nil, "", err
+	}
+
+	c.Token = authResponse.Token
+	c.User = user
+
+	return user, authResponse.Token, nil
 }
 
 // CreateUser accepts a user and invokes the rest API to create it.

@@ -48,13 +48,13 @@ func (m *MySQL) connectionString() string {
 }
 
 // UserFromCredentials takes the email and password and searches for one singular user that matches the two.
-func (m *MySQL) UserFromCredentials(email, password string) *model.User {
+func (m *MySQL) UserFromCredentials(email, employmentDate string) (*model.User, error) {
 
-	row := m.Connection.QueryRow("SELECT medewerkernummer, naam FROM medewerker WHERE email = (?) AND wachtwoord = (?) LIMIT 1;",
-		email, password)
+	row := m.Connection.QueryRow("SELECT medewerkernummer, naam FROM medewerker WHERE email = (?) AND datum_in_dienst = (?) LIMIT 1;",
+		email, employmentDate)
 
 	if row == nil {
-		return nil
+		return nil, fmt.Errorf("Onjuiste inloggegevens")
 	}
 
 	var id int
@@ -62,14 +62,14 @@ func (m *MySQL) UserFromCredentials(email, password string) *model.User {
 
 	err := row.Scan(&id, &name)
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("Onjuiste inloggegevens")
 	}
 
 	return &model.User{
 		Id:    id,
 		Name:  name,
 		Email: email,
-	}
+	}, nil
 }
 
 func (m *MySQL) GetCustomers() ([]*model.Customer, error) {

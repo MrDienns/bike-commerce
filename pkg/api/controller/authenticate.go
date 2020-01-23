@@ -2,9 +2,7 @@ package controller
 
 import (
 	"crypto/rsa"
-	"crypto/sha1"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -54,11 +52,11 @@ func (a *Authenticate) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	crypto := sha1.New()
-	crypto.Write([]byte(authRequest.Password))
-	hash := crypto.Sum(nil)
-
-	user := a.connector.UserFromCredentials(authRequest.Email, fmt.Sprintf("%x", hash))
+	user, err := a.connector.UserFromCredentials(authRequest.Email, authRequest.Password)
+	if err != nil {
+		response.WriteError(w, err.Error(), 401)
+		return
+	}
 	if user == nil {
 		response.WriteError(w, "Onjuiste inloggegevens", 401)
 		return
