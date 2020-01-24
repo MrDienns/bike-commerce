@@ -26,6 +26,10 @@ func NewUserListView(r *root) *userListView {
 		})
 	}
 
+	list.AddItem("Terug naar hoofdmenu", "", (0), func() {
+		r.screen.SetRoot(NewMenu(r), true)
+	})
+
 	horizontalFlex := tview.NewFlex().SetDirection(tview.FlexRow)
 	horizontalFlex.AddItem(tview.NewBox(), 0, 1, false)
 	horizontalFlex.AddItem(list, 0, 1, true)
