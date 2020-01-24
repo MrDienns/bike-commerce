@@ -20,8 +20,9 @@ func NewUserListView(r *root) *userListView {
 		panic(err)
 	}
 	for _, user := range users {
-		list.AddItem(user.Name, user.Email, rune(0), func() {
-
+		u := *user
+		list.AddItem(u.Name, u.Email, rune(0), func() {
+			r.screen.SetRoot(NewUserEditView(r, &u), true)
 		})
 	}
 

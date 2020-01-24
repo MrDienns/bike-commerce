@@ -5,7 +5,6 @@ import (
 	"crypto/rsa"
 	"encoding/json"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 
@@ -73,7 +72,7 @@ func (c *Client) GetUser(id string) (*model.User, error) {
 
 // UpdateUser takes a user as parameter, invokes the rest API with it and patches the provided user with the new data.
 func (c *Client) UpdateUser(user *model.User) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/user/%v", user.Id), http.MethodPut, user)
 }
 
 // DeleteUser invokes the rest API to delete the passed user.
@@ -113,7 +112,6 @@ func (c *Client) invoke(url, method string, body, responseObj interface{}) error
 	if c.User != nil {
 		request.Header.Add("Authorization", "Bearer "+c.Token)
 	}
-	//defer request.Body.Close()
 	if err != nil {
 		return err
 	}
@@ -133,12 +131,20 @@ func (c *Client) invoke(url, method string, body, responseObj interface{}) error
 	return unmarshalResponse(httpResponse, responseObj)
 }
 
-func (c *Client) invokeEmpty(url, method string) error {
+func (c *Client) invokeEmpty(url, method string, body interface{}) error {
 	client := &http.Client{}
-	var reader io.Reader
-	request, err := http.NewRequest(fmt.Sprintf("%s%s", c.endpoint, url), method, reader)
+	b, err := json.Marshal(body)
 	if err != nil {
 		return err
+	}
+	buffer := bytes.NewBuffer(b)
+	request, err := http.NewRequest(method, fmt.Sprintf("%s%s", c.endpoint, url), buffer)
+	if err != nil {
+		return err
+	}
+	request.Header.Add("Content-Type", "application/json")
+	if c.User != nil {
+		request.Header.Add("Authorization", "Bearer "+c.Token)
 	}
 	httpResponse, err := client.Do(request)
 	if err != nil {
