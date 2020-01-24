@@ -56,7 +56,14 @@ func (c *Client) CreateUser(user *model.User) error {
 
 // GetUsers invokes the rest API and returns all users.
 func (c *Client) GetUsers() ([]*model.User, error) {
-	return make([]*model.User, 0), nil
+
+	var resp []*model.User
+	err := c.invoke("/api/user", http.MethodGet, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // GetUser invokes the rest API and loads a user based on the provided ID.
@@ -103,6 +110,9 @@ func (c *Client) invoke(url, method string, body, responseObj interface{}) error
 	buffer := bytes.NewBuffer(b)
 	request, err := http.NewRequest(method, fmt.Sprintf("%s%s", c.endpoint, url), buffer)
 	request.Header.Add("Content-Type", "application/json")
+	if c.User != nil {
+		request.Header.Add("Authorization", "Bearer "+c.Token)
+	}
 	//defer request.Body.Close()
 	if err != nil {
 		return err

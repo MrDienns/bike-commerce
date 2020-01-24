@@ -20,7 +20,7 @@ func NewMenu(r *root) *menuView {
 	})
 
 	list.AddItem("Beheer medewerkers", "", rune(50), func() {
-
+		r.screen.SetRoot(NewUserListView(r), true)
 	})
 
 	list.AddItem("Beheer bakfietsen", "", rune(51), func() {
