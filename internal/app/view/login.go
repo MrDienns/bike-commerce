@@ -12,7 +12,7 @@ type loginView struct {
 }
 
 // NewLogin creates the flex layout and all necessary boxes in order to create a proper layout for the login view.
-func NewLoginView(r *root) *loginView {
+func NewLoginView(r *root, err string) *loginView {
 
 	ret := &loginView{root: r}
 
@@ -32,6 +32,7 @@ func NewLoginView(r *root) *loginView {
 
 	frame := tview.NewFrame(form)
 	frame.AddText("Welkom bij Van der Binckes", true, tview.AlignCenter, tcell.ColorWhite)
+	frame.AddText(err, false, tview.AlignCenter, tcell.ColorRed)
 
 	horizontalFlex := tview.NewFlex().SetDirection(tview.FlexRow)
 	horizontalFlex.AddItem(tview.NewBox(), 0, 1, false)
@@ -51,7 +52,8 @@ func NewLoginView(r *root) *loginView {
 func (lv *loginView) login(username, password string) {
 	_, _, err := lv.client.Authenticate(username, password)
 	if err != nil {
-		panic(err)
+		lv.root.screen.SetRoot(NewLoginView(lv.root, err.Error()), true)
+		return
 	}
 	panic(lv.client.User.Id)
 }

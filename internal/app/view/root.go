@@ -22,7 +22,7 @@ func NewRoot(client *api.Client) *root {
 
 // Start initialises the underlying views and opens the application in the terminal.
 func (r *root) Start() error {
-	r.login = NewLoginView(r)
+	r.login = NewLoginView(r, "")
 	r.screen.SetRoot(r.login, true)
 	return r.screen.Run()
 }
