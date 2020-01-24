@@ -43,7 +43,7 @@ func (u *User) Routes() *chi.Mux {
 }
 
 func (u *User) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := u.userRepo.GetCustomers()
+	users, err := u.userRepo.GetUsers()
 	if err != nil {
 		response.WriteError(w, err.Error(), 500)
 		return
