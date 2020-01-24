@@ -55,5 +55,5 @@ func (lv *loginView) login(username, password string) {
 		lv.root.screen.SetRoot(NewLoginView(lv.root, err.Error()), true)
 		return
 	}
-	panic(lv.client.User.Id)
+	lv.root.screen.SetRoot(NewMenu(lv.root), true)
 }
