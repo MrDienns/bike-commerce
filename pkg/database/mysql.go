@@ -289,7 +289,7 @@ func (m *MySQL) CreateBike(bike *model.Bike) error {
 }
 
 func (m *MySQL) UpdateBike(bike *model.Bike) error {
-	_, err := m.Connection.Exec("UPDATE bakfiets SET naam = (?), type = (?), huurprijs = (?), aantal = (?), aantal_verhuurd (?) WHERE bakfietsnummer = (?) LIMIT 1;",
+	_, err := m.Connection.Exec("UPDATE bakfiets SET naam = (?), type = (?), huurprijs = (?), aantal = (?), aantal_verhuurd = (?) WHERE bakfietsnummer = (?) LIMIT 1;",
 		bike.Name, bike.Type, bike.Price, bike.Quantity, bike.AmountRented, bike.ID)
 	return err
 }

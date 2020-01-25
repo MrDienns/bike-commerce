@@ -24,7 +24,7 @@ func NewMenu(r *root) *menuView {
 	})
 
 	list.AddItem("Beheer bakfietsen", "", rune(51), func() {
-
+		r.screen.SetRoot(NewBikeListView(r), true)
 	})
 
 	list.AddItem("Beheer accessoires", "", rune(52), func() {

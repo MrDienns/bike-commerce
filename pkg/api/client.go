@@ -82,7 +82,13 @@ func (c *Client) DeleteUser(user *model.User) error {
 
 // GetBikes invokes the rest API and returns all bikes.
 func (c *Client) GetBikes() ([]*model.Bike, error) {
-	return make([]*model.Bike, 0), nil
+	var resp []*model.Bike
+	err := c.invoke("/api/bike", http.MethodGet, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
 }
 
 // GetBike invokes the rest API with the passed bike ID and returns the bike.
@@ -92,7 +98,7 @@ func (c *Client) GetBike(id string) (*model.Bike, error) {
 
 // UpdateBike takes a bike as argument and updates it by invoking the rest API.
 func (c *Client) UpdateBike(bike *model.Bike) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/bike/%v", bike.ID), http.MethodPut, bike)
 }
 
 // DeleteBike takes a bike as argument and deletes it by invoking the rest API.
