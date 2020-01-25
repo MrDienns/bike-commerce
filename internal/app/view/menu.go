@@ -16,7 +16,7 @@ func NewMenu(r *root) *menuView {
 	list := tview.NewList().ShowSecondaryText(false)
 	list.SetBorder(true)
 	list.AddItem("Beheer klanten", "", rune(49), func() {
-
+		r.screen.SetRoot(NewCustomerListView(r), true)
 	})
 
 	list.AddItem("Beheer medewerkers", "", rune(50), func() {

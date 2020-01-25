@@ -100,6 +100,39 @@ func (c *Client) DeleteBike(bike *model.Bike) error {
 	return nil
 }
 
+// CreateCustomer accepts a customer and invokes the rest API to create it.
+func (c *Client) CreateCustomer(customer *model.Customer) error {
+	return nil
+}
+
+// GetCustomers invokes the rest API and returns all customers.
+func (c *Client) GetCustomers() ([]*model.Customer, error) {
+
+	var resp []*model.Customer
+	err := c.invoke("/api/customer", http.MethodGet, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+// GetCustomer invokes the rest API and loads a customer based on the provided ID.
+func (c *Client) GetCustomer(id string) (*model.Customer, error) {
+	return &model.Customer{}, nil
+}
+
+// UpdateCustomer takes a customer as parameter, invokes the rest API with it and patches the provided customer with
+// the new data.
+func (c *Client) UpdateCustomer(customer *model.Customer) error {
+	return c.invokeEmpty(fmt.Sprintf("/api/customer/%v", customer.ID), http.MethodPut, customer)
+}
+
+// DeleteCustomer invokes the rest API to delete the passed customer.
+func (c *Client) DeleteCustomer(customer *model.Customer) error {
+	return nil
+}
+
 func (c *Client) invoke(url, method string, body, responseObj interface{}) error {
 	client := &http.Client{}
 	b, err := json.Marshal(body)
