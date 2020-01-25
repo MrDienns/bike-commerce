@@ -298,3 +298,74 @@ func (m *MySQL) DeleteBike(id int) error {
 	_, err := m.Connection.Exec("DELETE FROM bakfiets WHERE bakfietsnummer = (?) LIMIT 1;", id)
 	return err
 }
+
+func (m *MySQL) GetAccessories() ([]*model.Accessory, error) {
+
+	result := make([]*model.Accessory, 0)
+
+	rows, err := m.Connection.Query("SELECT * FROM accessoire")
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+
+		var id int
+		var name string
+		var price float32
+
+		err := rows.Scan(&id, &name, &price)
+		if err != nil {
+			return nil, err
+		}
+
+		result = append(result, &model.Accessory{
+			ID:    id,
+			Name:  name,
+			Price: price,
+		})
+	}
+
+	return result, nil
+}
+
+func (m *MySQL) GetAccessory(id int) (*model.Accessory, error) {
+	row := m.Connection.QueryRow("SELECT * FROM accessoire WHERE accessoirenummer = (?) LIMIT 1;", id)
+	if row == nil {
+		return nil, fmt.Errorf("Bike does not exist")
+	}
+
+	var name string
+	var price float32
+
+	err := row.Scan(&id, &name, &price)
+	if err != nil {
+		return nil, err
+	}
+
+	return &model.Accessory{
+		ID:    id,
+		Name:  name,
+		Price: price,
+	}, nil
+}
+
+func (m *MySQL) CreateAccessory(accessory *model.Accessory) error {
+	row := m.Connection.QueryRow("SELECT MAX(accessoirenummer) FROM accessoire")
+	var id = 0
+	row.Scan(&id)
+
+	_, err := m.Connection.Exec("INSERT INTO accessoire (accessoirenummer, naam, huurprijs) VALUES (?, ?, ?)",
+		id+1, accessory.Name, accessory.Price)
+	return err
+}
+
+func (m *MySQL) UpdateAccessory(accessory *model.Accessory) error {
+	_, err := m.Connection.Exec("UPDATE accessoire SET naam = (?), huurprijs = (?) WHERE accessoirenummer = (?) LIMIT 1;",
+		accessory.Name, accessory.Price, accessory.ID)
+	return err
+}
+
+func (m *MySQL) DeleteAccessory(id int) error {
+	_, err := m.Connection.Exec("DELETE FROM accessoire WHERE accessoirenummer = (?) LIMIT 1;", id)
+	return err
+}

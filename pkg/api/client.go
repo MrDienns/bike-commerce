@@ -139,6 +139,39 @@ func (c *Client) DeleteCustomer(customer *model.Customer) error {
 	return nil
 }
 
+// CreateAccessory accepts a customer and invokes the rest API to create it.
+func (c *Client) CreateAccessory(accessory *model.Customer) error {
+	return nil
+}
+
+// GetAccessories invokes the rest API and returns all accessories.
+func (c *Client) GetAccessories() ([]*model.Accessory, error) {
+
+	var resp []*model.Accessory
+	err := c.invoke("/api/accessory", http.MethodGet, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+// GetAccessory invokes the rest API and loads a accessory based on the provided ID.
+func (c *Client) GetAccessory(id string) (*model.Accessory, error) {
+	return &model.Accessory{}, nil
+}
+
+// UpdateAccessory takes a customer as parameter, invokes the rest API with it and patches the provided accessory with
+// the new data.
+func (c *Client) UpdateAccessory(accessory *model.Accessory) error {
+	return c.invokeEmpty(fmt.Sprintf("/api/accessory/%v", accessory.ID), http.MethodPut, accessory)
+}
+
+// DeleteAccessory invokes the rest API to delete the passed accessory.
+func (c *Client) DeleteAccessory(accessory *model.Accessory) error {
+	return nil
+}
+
 func (c *Client) invoke(url, method string, body, responseObj interface{}) error {
 	client := &http.Client{}
 	b, err := json.Marshal(body)

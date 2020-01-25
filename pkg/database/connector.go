@@ -26,4 +26,10 @@ type Connector interface {
 	CreateBike(bike *model.Bike) error
 	UpdateBike(bike *model.Bike) error
 	DeleteBike(id int) error
+
+	GetAccessories() ([]*model.Accessory, error)
+	GetAccessory(id int) (*model.Accessory, error)
+	CreateAccessory(bike *model.Accessory) error
+	UpdateAccessory(bike *model.Accessory) error
+	DeleteAccessory(id int) error
 }

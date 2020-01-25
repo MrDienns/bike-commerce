@@ -28,7 +28,7 @@ func NewMenu(r *root) *menuView {
 	})
 
 	list.AddItem("Beheer accessoires", "", rune(52), func() {
-
+		r.screen.SetRoot(NewAccessoryListView(r), true)
 	})
 
 	list.AddItem("Beheer verhuur", "", rune(53), func() {
