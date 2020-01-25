@@ -37,6 +37,13 @@ func NewAccessoryEditView(r *root, accessory *model.Accessory) *accessoryEditVie
 		}
 		r.screen.SetRoot(NewAccessoryListView(r), true)
 	})
+	form.AddButton("Verwijderen", func() {
+		err := r.client.DeleteAccessory(accessory)
+		if err != nil {
+			panic(err)
+		}
+		r.screen.SetRoot(NewAccessoryListView(r), true)
+	})
 	form.AddButton("Annuleren", func() {
 		r.screen.SetRoot(NewAccessoryListView(r), true)
 	})

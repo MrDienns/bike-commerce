@@ -48,6 +48,13 @@ func NewBikeEditView(r *root, bike *model.Bike) *bikeEditView {
 		}
 		r.screen.SetRoot(NewBikeListView(r), true)
 	})
+	form.AddButton("Verwijderen", func() {
+		err := r.client.DeleteBike(bike)
+		if err != nil {
+			panic(err)
+		}
+		r.screen.SetRoot(NewBikeListView(r), true)
+	})
 	form.AddButton("Annuleren", func() {
 		r.screen.SetRoot(NewBikeListView(r), true)
 	})

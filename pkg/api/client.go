@@ -77,7 +77,7 @@ func (c *Client) UpdateUser(user *model.User) error {
 
 // DeleteUser invokes the rest API to delete the passed user.
 func (c *Client) DeleteUser(user *model.User) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/user/%v", user.Id), http.MethodDelete, nil)
 }
 
 // GetBikes invokes the rest API and returns all bikes.
@@ -103,7 +103,7 @@ func (c *Client) UpdateBike(bike *model.Bike) error {
 
 // DeleteBike takes a bike as argument and deletes it by invoking the rest API.
 func (c *Client) DeleteBike(bike *model.Bike) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/bike/%v", bike.ID), http.MethodDelete, nil)
 }
 
 // CreateCustomer accepts a customer and invokes the rest API to create it.
@@ -136,7 +136,7 @@ func (c *Client) UpdateCustomer(customer *model.Customer) error {
 
 // DeleteCustomer invokes the rest API to delete the passed customer.
 func (c *Client) DeleteCustomer(customer *model.Customer) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/customer/%v", customer.ID), http.MethodDelete, nil)
 }
 
 // CreateAccessory accepts a customer and invokes the rest API to create it.
@@ -169,7 +169,7 @@ func (c *Client) UpdateAccessory(accessory *model.Accessory) error {
 
 // DeleteAccessory invokes the rest API to delete the passed accessory.
 func (c *Client) DeleteAccessory(accessory *model.Accessory) error {
-	return nil
+	return c.invokeEmpty(fmt.Sprintf("/api/accessory/%v", accessory.ID), http.MethodDelete, nil)
 }
 
 func (c *Client) invoke(url, method string, body, responseObj interface{}) error {

@@ -146,7 +146,17 @@ func (m *MySQL) UpdateCustomer(customer *model.Customer) error {
 }
 
 func (m *MySQL) DeleteCustomer(id int) error {
-	_, err := m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
+
+	_, err := m.Connection.Exec("DELETE verhuuraccessoire FROM verhuuraccessoire INNER JOIN verhuur ON verhuur.verhuurnummer = verhuuraccessoire.verhuurnummer WHERE verhuur.klantnummer = (?)", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = m.Connection.Exec("DELETE FROM verhuur WHERE klantnummer = (?) LIMIT 1;", id)
+	if err != nil {
+		return err
+	}
+	_, err = m.Connection.Exec("DELETE FROM klant WHERE klantnummer = (?) LIMIT 1;", id)
 	return err
 }
 
@@ -295,7 +305,17 @@ func (m *MySQL) UpdateBike(bike *model.Bike) error {
 }
 
 func (m *MySQL) DeleteBike(id int) error {
-	_, err := m.Connection.Exec("DELETE FROM bakfiets WHERE bakfietsnummer = (?) LIMIT 1;", id)
+	_, err := m.Connection.Exec("DELETE verhuuraccessoire FROM verhuuraccessoire INNER JOIN verhuur ON verhuur.verhuurnummer = verhuuraccessoire.verhuurnummer WHERE verhuur.bakfietsnummer = (?)", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = m.Connection.Exec("DELETE FROM verhuur WHERE bakfietsnummer = (?) LIMIT 1;", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = m.Connection.Exec("DELETE FROM bakfiets WHERE bakfietsnummer = (?) LIMIT 1;", id)
 	return err
 }
 

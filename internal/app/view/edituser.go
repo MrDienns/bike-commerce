@@ -36,6 +36,13 @@ func NewUserEditView(r *root, user *model.User) *userEditView {
 		}
 		r.screen.SetRoot(NewUserListView(r), true)
 	})
+	form.AddButton("Verwijderen", func() {
+		err := r.client.DeleteUser(user)
+		if err != nil {
+			panic(err)
+		}
+		r.screen.SetRoot(NewUserListView(r), true)
+	})
 	form.AddButton("Annuleren", func() {
 		r.screen.SetRoot(NewUserListView(r), true)
 	})
