@@ -32,4 +32,10 @@ type Connector interface {
 	CreateAccessory(bike *model.Accessory) error
 	UpdateAccessory(bike *model.Accessory) error
 	DeleteAccessory(id int) error
+
+	GetRentals() ([]*model.Rental, error)
+	GetRental(id int) (*model.Rental, error)
+	CreateRental(bike *model.Rental) error
+	UpdateRental(bike *model.Rental) error
+	DeleteRental(id int) error
 }

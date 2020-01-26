@@ -389,3 +389,242 @@ func (m *MySQL) DeleteAccessory(id int) error {
 	_, err := m.Connection.Exec("DELETE FROM accessoire WHERE accessoirenummer = (?) LIMIT 1;", id)
 	return err
 }
+
+func (m *MySQL) GetRentals() ([]*model.Rental, error) {
+
+	result := make([]*model.Rental, 0)
+
+	rentalRows, err := m.Connection.Query("SELECT * FROM verhuur INNER JOIN klant k on verhuur.klantnummer = k.klantnummer INNER JOIN medewerker m on verhuur.verhuurder = m.medewerkernummer INNER JOIN bakfiets b on verhuur.bakfietsnummer = b.bakfietsnummer")
+	if err != nil {
+		return nil, err
+	}
+	for rentalRows.Next() {
+
+		var rentalId, bikeId, days, customerId, userId, houseNumber, bikeQuantity, bikeAmountRented int
+		var rentalDate, customerLastname, customerFirstname, postalCode, houseNumberAddition, comment, userName,
+			userEmail, employmentDate, bikeName, bikeType string
+		var rentalPrice, bikePrice float32
+
+		err := rentalRows.Scan(&rentalId, &rentalDate, &bikeId, &days, &rentalPrice, &customerId, &userId, &customerId,
+			&customerLastname, &customerFirstname, &postalCode, &houseNumber, &houseNumberAddition, &comment, &userId,
+			&userName, &userEmail, &employmentDate, &bikeId, &bikeName, &bikeType, &bikePrice, &bikeQuantity, &bikeAmountRented)
+		if err != nil {
+			return nil, err
+		}
+
+		customer := &model.Customer{
+			ID:                  customerId,
+			Firstname:           customerFirstname,
+			Lastname:            customerLastname,
+			Postalcode:          postalCode,
+			Housenumber:         houseNumber,
+			HousenumberAddition: houseNumberAddition,
+			Comment:             comment,
+		}
+
+		user := &model.User{
+			Id:             userId,
+			Name:           userName,
+			Email:          userEmail,
+			EmploymentDate: employmentDate,
+		}
+
+		bike := &model.Bike{
+			ID:           bikeId,
+			Name:         bikeName,
+			Type:         bikeType,
+			Price:        bikePrice,
+			Quantity:     bikeQuantity,
+			AmountRented: bikeAmountRented,
+		}
+
+		accessories := make(map[int]*model.RentedAccessory, 0)
+
+		accessoryRows, err := m.Connection.Query("SELECT accessoire.accessoirenummer, naam, huurprijs, aantal FROM accessoire INNER JOIN verhuuraccessoire v on accessoire.accessoirenummer = v.accessoirenummer WHERE v.verhuurnummer = (?)", rentalId)
+		if err != nil {
+			return nil, err
+		}
+		for accessoryRows.Next() {
+
+			var accessoryID, amount int
+			var accessoryName string
+			var accessoryPrice float32
+
+			err = accessoryRows.Scan(&accessoryID, &accessoryName, &accessoryPrice, &amount)
+			if err != nil {
+				return nil, err
+			}
+
+			accessories[accessoryID] = &model.RentedAccessory{
+				ID:     accessoryID,
+				Name:   accessoryName,
+				Price:  accessoryPrice,
+				Amount: amount,
+			}
+		}
+
+		rental := &model.Rental{
+			ID:          rentalId,
+			StartDate:   rentalDate,
+			Days:        days,
+			TotalPrice:  rentalPrice,
+			Customer:    customer,
+			Employee:    user,
+			Bike:        bike,
+			Accessories: accessories,
+		}
+
+		result = append(result, rental)
+	}
+
+	return result, nil
+}
+
+func (m *MySQL) GetRental(id int) (*model.Rental, error) {
+
+	rentalRow := m.Connection.QueryRow("SELECT * FROM verhuur INNER JOIN klant k on verhuur.klantnummer = k.klantnummer INNER JOIN medewerker m on verhuur.verhuurder = m.medewerkernummer INNER JOIN bakfiets b on verhuur.bakfietsnummer = b.bakfietsnummer WHERE verhuur.verhuurnummer = (?) LIMIT 1", id)
+
+	var rentalId, bikeId, days, customerId, userId, houseNumber, bikeQuantity, bikeAmountRented int
+	var rentalDate, customerLastname, customerFirstname, postalCode, houseNumberAddition, comment, userName,
+		userEmail, employmentDate, bikeName, bikeType string
+	var rentalPrice, bikePrice float32
+
+	err := rentalRow.Scan(&rentalId, &rentalDate, &bikeId, &days, &rentalPrice, &customerId, &userId, &customerId,
+		&customerLastname, &customerFirstname, &postalCode, &houseNumber, &houseNumberAddition, &comment, &userId,
+		&userName, &userEmail, &employmentDate, &bikeId, &bikeName, &bikeType, &bikePrice, &bikeQuantity, &bikeAmountRented)
+	if err != nil {
+		return nil, err
+	}
+
+	customer := &model.Customer{
+		ID:                  customerId,
+		Firstname:           customerFirstname,
+		Lastname:            customerLastname,
+		Postalcode:          postalCode,
+		Housenumber:         houseNumber,
+		HousenumberAddition: houseNumberAddition,
+		Comment:             comment,
+	}
+
+	user := &model.User{
+		Id:             userId,
+		Name:           userName,
+		Email:          userEmail,
+		EmploymentDate: employmentDate,
+	}
+
+	bike := &model.Bike{
+		ID:           bikeId,
+		Name:         bikeName,
+		Type:         bikeType,
+		Price:        bikePrice,
+		Quantity:     bikeQuantity,
+		AmountRented: bikeAmountRented,
+	}
+
+	accessories := make(map[int]*model.RentedAccessory, 0)
+
+	accessoryRows, err := m.Connection.Query("SELECT accessoire.accessoirenummer, naam, huurprijs, aantal FROM accessoire INNER JOIN verhuuraccessoire v on accessoire.accessoirenummer = v.accessoirenummer WHERE v.verhuurnummer = (?)", rentalId)
+	if err != nil {
+		return nil, err
+	}
+	for accessoryRows.Next() {
+
+		var accessoryID, amount int
+		var accessoryName string
+		var accessoryPrice float32
+
+		err = accessoryRows.Scan(&accessoryID, &accessoryName, &accessoryPrice, &amount)
+		if err != nil {
+			return nil, err
+		}
+
+		accessories[accessoryID] = &model.RentedAccessory{
+			ID:     accessoryID,
+			Name:   accessoryName,
+			Price:  accessoryPrice,
+			Amount: amount,
+		}
+	}
+
+	rental := &model.Rental{
+		ID:          rentalId,
+		StartDate:   rentalDate,
+		Days:        days,
+		TotalPrice:  rentalPrice,
+		Customer:    customer,
+		Employee:    user,
+		Bike:        bike,
+		Accessories: accessories,
+	}
+
+	return rental, nil
+}
+
+func (m *MySQL) CreateRental(rental *model.Rental) error {
+	row := m.Connection.QueryRow("SELECT MAX(verhuurnummer) FROM verhuur")
+	var id = 0
+	row.Scan(&id)
+
+	_, err := m.Connection.Exec("INSERT INTO verhuur (verhuurnummer, verhuurdatum, bakfietsnummer, aantal_dagen, huurprijstotaal, klantnummer, verhuurder) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		id+1, rental.StartDate, rental.Bike.ID, rental.Days, rental.TotalPrice, rental.Customer.ID, rental.Employee.Id)
+	if err != nil {
+		return err
+	}
+
+	for _, acc := range rental.Accessories {
+		_, err = m.Connection.Exec("INSERT INTO verhuuraccessoire (verhuurnummer, accessoirenummer, aantal) VALUES (?, ?, ?)",
+			id+1, acc.ID, acc.Amount)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (m *MySQL) UpdateRental(rental *model.Rental) error {
+	_, err := m.Connection.Exec("UPDATE verhuur SET verhuurdatum = (?), bakfietsnummer = (?), aantal_dagen = (?), huurprijstotaal = (?), klantnummer = (?), verhuurder = (?) WHERE verhuurnummer = (?) LIMIT 1;",
+		rental.StartDate, rental.Bike.ID, rental.Days, rental.TotalPrice, rental.Customer.ID, rental.Employee.Id, rental.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, acc := range rental.Accessories {
+
+		rows, err := m.Connection.Query("SELECT * FROM verhuuraccessoire WHERE verhuurnummer = (?) AND accessoirenummer = (?) LIMIT 1;",
+			rental.ID, acc.ID)
+		if err != nil {
+			return err
+		}
+		if rows == nil || !rows.Next() {
+
+			_, err = m.Connection.Exec("INSERT INTO verhuuraccessoire (verhuurnummer, accessoirenummer, aantal) VALUES (?, ?, ?)",
+				rental.ID, acc.ID, acc.Amount)
+			if err != nil {
+				return err
+			}
+
+		} else {
+
+			_, err = m.Connection.Exec("UPDATE verhuuraccessoire SET aantal = (?) WHERE verhuurnummer = (?) AND accessoirenummer = (?)",
+				acc.Amount, rental.ID, acc.ID)
+			if err != nil {
+				return err
+			}
+
+		}
+	}
+
+	return nil
+}
+
+func (m *MySQL) DeleteRental(id int) error {
+	_, err := m.Connection.Exec("DELETE verhuuraccessoire FROM verhuuraccessoire INNER JOIN verhuur ON verhuur.verhuurnummer = verhuuraccessoire.verhuurnummer WHERE verhuur.verhuurnummer = (?)", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = m.Connection.Exec("DELETE FROM verhuur WHERE verhuurnummer = (?) LIMIT 1;", id)
+	return err
+}

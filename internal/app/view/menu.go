@@ -32,7 +32,7 @@ func NewMenu(r *root) *menuView {
 	})
 
 	list.AddItem("Beheer verhuur", "", rune(53), func() {
-
+		r.screen.SetRoot(NewRentalListView(r), true)
 	})
 
 	list.AddItem("Uitloggen", "", rune(54), func() {

@@ -42,6 +42,7 @@ func (s *Server) Start() error {
 
 func (s *Server) Routes() *chi.Mux {
 	r := chi.NewRouter()
+	r.Mount("/rental", controller.NewRental(s.logger, s.publickey, s.connector).Routes())
 	r.Mount("/accessory", controller.NewAccessory(s.logger, s.publickey, s.connector).Routes())
 	r.Mount("/bike", controller.NewBike(s.logger, s.publickey, s.connector).Routes())
 	r.Mount("/user", controller.NewUser(s.logger, s.publickey, s.connector).Routes())

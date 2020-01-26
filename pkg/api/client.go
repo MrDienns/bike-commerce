@@ -177,6 +177,39 @@ func (c *Client) DeleteAccessory(accessory *model.Accessory) error {
 	return c.invokeEmpty(fmt.Sprintf("/api/accessory/%v", accessory.ID), http.MethodDelete, nil)
 }
 
+// CreateRental accepts a rental and invokes the rest API to create it.
+func (c *Client) CreateRental(rental *model.Rental) error {
+	return c.invokeEmpty("/api/rental", http.MethodPost, rental)
+}
+
+// GetRentals invokes the rest API and returns all rentals.
+func (c *Client) GetRentals() ([]*model.Rental, error) {
+
+	var resp []*model.Rental
+	err := c.invoke("/api/rental", http.MethodGet, nil, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+// GetRental invokes the rest API and loads a rental based on the provided ID.
+func (c *Client) GetRental(id string) (*model.Rental, error) {
+	return &model.Rental{}, nil
+}
+
+// UpdateRental takes a rental as parameter, invokes the rest API with it and patches the provided rental with
+// the new data.
+func (c *Client) UpdateRental(rental *model.Rental) error {
+	return c.invokeEmpty(fmt.Sprintf("/api/rental/%v", rental.ID), http.MethodPut, rental)
+}
+
+// DeleteRental invokes the rest API to delete the passed rental.
+func (c *Client) DeleteRental(rental *model.Rental) error {
+	return c.invokeEmpty(fmt.Sprintf("/api/rental/%v", rental.ID), http.MethodDelete, nil)
+}
+
 func (c *Client) invoke(url, method string, body, responseObj interface{}) error {
 	client := &http.Client{}
 	b, err := json.Marshal(body)
