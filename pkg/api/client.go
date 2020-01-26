@@ -108,7 +108,7 @@ func (c *Client) DeleteBike(bike *model.Bike) error {
 
 // CreateCustomer accepts a customer and invokes the rest API to create it.
 func (c *Client) CreateCustomer(customer *model.Customer) error {
-	return nil
+	return c.invokeEmpty("/api/customer", http.MethodPost, customer)
 }
 
 // GetCustomers invokes the rest API and returns all customers.

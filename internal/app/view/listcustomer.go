@@ -31,7 +31,11 @@ func NewCustomerListView(r *root) *customerListView {
 			})
 	}
 
-	list.AddItem("Terug naar hoofdmenu", "", (0), func() {
+	list.AddItem("Klant aanmaken", "", rune(0), func() {
+		r.screen.SetRoot(NewCustomerNewView(r), true)
+	})
+
+	list.AddItem("Terug naar hoofdmenu", "", rune(0), func() {
 		r.screen.SetRoot(NewMenu(r), true)
 	})
 
