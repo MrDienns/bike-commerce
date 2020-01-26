@@ -26,7 +26,11 @@ func NewBikeListView(r *root) *bikeListView {
 		})
 	}
 
-	list.AddItem("Terug naar hoofdmenu", "", (0), func() {
+	list.AddItem("Bakfiets aanmaken", "", rune(0), func() {
+		r.screen.SetRoot(NewBikeNewView(r), true)
+	})
+
+	list.AddItem("Terug naar hoofdmenu", "", rune(0), func() {
 		r.screen.SetRoot(NewMenu(r), true)
 	})
 

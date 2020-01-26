@@ -80,6 +80,11 @@ func (c *Client) DeleteUser(user *model.User) error {
 	return c.invokeEmpty(fmt.Sprintf("/api/user/%v", user.Id), http.MethodDelete, nil)
 }
 
+// CreateBike accepts a user and invokes the rest API to create it.
+func (c *Client) CreateBike(bike *model.Bike) error {
+	return c.invokeEmpty("/api/bike", http.MethodPost, bike)
+}
+
 // GetBikes invokes the rest API and returns all bikes.
 func (c *Client) GetBikes() ([]*model.Bike, error) {
 	var resp []*model.Bike
