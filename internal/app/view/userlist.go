@@ -26,7 +26,10 @@ func NewUserListView(r *root) *userListView {
 		})
 	}
 
-	list.AddItem("Terug naar hoofdmenu", "", (0), func() {
+	list.AddItem("Medewerker aanmaken", "", rune(0), func() {
+		r.screen.SetRoot(NewUserNewView(r), true)
+	})
+	list.AddItem("Terug naar hoofdmenu", "", rune(0), func() {
 		r.screen.SetRoot(NewMenu(r), true)
 	})
 

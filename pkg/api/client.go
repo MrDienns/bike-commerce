@@ -50,7 +50,7 @@ func (c *Client) Authenticate(email, password string) (*model.User, string, erro
 
 // CreateUser accepts a user and invokes the rest API to create it.
 func (c *Client) CreateUser(user *model.User) error {
-	return nil
+	return c.invokeEmpty("/api/user", http.MethodPost, user)
 }
 
 // GetUsers invokes the rest API and returns all users.
