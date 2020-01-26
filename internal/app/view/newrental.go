@@ -24,10 +24,14 @@ func NewRentalNewView(r *root) *rentalNewView {
 		Accessories: map[int]*model.RentedAccessory{},
 	}}
 
+	rentalFlex := tview.NewFlex()
+	rentalFlex.SetBorder(true)
+
+	receipt := textView(ret.rental)
+
 	flex := tview.NewFlex()
 
 	form := tview.NewForm()
-	form.SetBorder(true)
 
 	bikes, _ := r.client.GetBikes()
 	bikeOptions := util.BikesAsArray(bikes)
@@ -37,15 +41,18 @@ func NewRentalNewView(r *root) *rentalNewView {
 
 	form.AddDropDown("Bakfiets", bikeOptions, 0, func(option string, optionIndex int) {
 		ret.rental.Bike = bikes[optionIndex]
+		receipt.SetText(receiptText(ret.rental))
 	})
 
 	form.AddInputField("Verhuurdatum", ret.rental.StartDate, 50, nil, func(text string) {
 		ret.rental.StartDate = text
+		receipt.SetText(receiptText(ret.rental))
 	})
 
 	form.AddInputField("Aantal dagen", strconv.Itoa(ret.rental.Days), 50, nil, func(text string) {
 		number, _ := strconv.Atoi(text)
 		ret.rental.Days = number
+		receipt.SetText(receiptText(ret.rental))
 	})
 
 	form.AddDropDown("Klant", customerOptions, 0, func(option string, optionIndex int) {
@@ -53,7 +60,13 @@ func NewRentalNewView(r *root) *rentalNewView {
 	})
 
 	accessoires, _ := r.client.GetAccessories()
-	for _, accessory := range accessoires {
+
+	accessoriesArr := make([]*model.Accessory, len(accessoires))
+	for i, a := range accessoires {
+		accessoriesArr[i] = *&a
+	}
+
+	for _, accessory := range accessoriesArr {
 		a := *accessory
 		acc, ok := ret.rental.Accessories[a.ID]
 		if acc == nil {
@@ -77,6 +90,7 @@ func NewRentalNewView(r *root) *rentalNewView {
 						Amount: number,
 					}
 				}
+				receipt.SetText(receiptText(ret.rental))
 			})
 	}
 
@@ -91,9 +105,13 @@ func NewRentalNewView(r *root) *rentalNewView {
 		r.screen.SetRoot(NewRentalListView(r), true)
 	})
 
+	rentalFlex.SetDirection(tview.FlexRow)
+	rentalFlex.AddItem(form, 0, 1, true)
+	rentalFlex.AddItem(receipt, 0, 1, false)
+
 	horizontalFlex := tview.NewFlex().SetDirection(tview.FlexRow)
 	horizontalFlex.AddItem(tview.NewBox(), 0, 1, false)
-	horizontalFlex.AddItem(form, 0, 1, true)
+	horizontalFlex.AddItem(rentalFlex, 0, 6, true)
 	horizontalFlex.AddItem(tview.NewBox(), 0, 1, false)
 
 	flex.AddItem(tview.NewBox(), 0, 1, false)
