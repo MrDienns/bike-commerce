@@ -250,6 +250,9 @@ func (m *MySQL) GetBikes() ([]*model.Bike, error) {
 			return nil, err
 		}
 
+		amountRow := m.Connection.QueryRow("SELECT COUNT(*) FROM bakfiets INNER JOIN verhuur v on bakfiets.bakfietsnummer = v.bakfietsnummer WHERE v.bakfietsnummer = (?) AND CURDATE() BETWEEN v.verhuurdatum AND DATE_ADD(v.verhuurdatum, INTERVAL v.aantal_dagen DAY)", id)
+		amountRow.Scan(&amountRented)
+
 		result = append(result, &model.Bike{
 			ID:           id,
 			Name:         name,
