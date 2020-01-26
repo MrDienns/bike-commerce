@@ -2,14 +2,6 @@ version: '3.7'
 
 services:
 
-  bike-commerce:
-    image: bike-commerce:latest
-    ports:
-      - "8080:8080"
-    restart: on-failure
-    build:
-      context: ./
-
   mysql:
     image: mysql:8
     environment:
