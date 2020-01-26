@@ -145,8 +145,8 @@ func (c *Client) DeleteCustomer(customer *model.Customer) error {
 }
 
 // CreateAccessory accepts a customer and invokes the rest API to create it.
-func (c *Client) CreateAccessory(accessory *model.Customer) error {
-	return nil
+func (c *Client) CreateAccessory(accessory *model.Accessory) error {
+	return c.invokeEmpty("/api/accessory", http.MethodPost, accessory)
 }
 
 // GetAccessories invokes the rest API and returns all accessories.

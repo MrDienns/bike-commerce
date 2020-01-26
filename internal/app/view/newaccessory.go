@@ -7,14 +7,14 @@ import (
 	"github.com/rivo/tview"
 )
 
-type bikeNewView struct {
+type accessoryNewView struct {
 	*root
 	tview.Primitive
-	bike *model.Bike
+	accessory *model.Accessory
 }
 
-func NewBikeNewView(r *root) *bikeNewView {
-	ret := &bikeNewView{root: r, bike: &model.Bike{}}
+func NewAccessoryNewView(r *root) *accessoryNewView {
+	ret := &accessoryNewView{root: r, accessory: &model.Accessory{}}
 
 	flex := tview.NewFlex()
 
@@ -22,33 +22,22 @@ func NewBikeNewView(r *root) *bikeNewView {
 	form.SetBorder(true)
 
 	form.AddInputField("Naam", "", 50, nil, func(text string) {
-		ret.bike.Name = text
-	})
-	form.AddInputField("Type", "", 50, nil, func(text string) {
-		ret.bike.Type = text
+		ret.accessory.Name = text
 	})
 	form.AddInputField("Prijs", "", 50, nil, func(text string) {
 		number, _ := strconv.ParseFloat(text, 32)
-		ret.bike.Price = float32(number)
-	})
-	form.AddInputField("Hoeveelheid", "", 50, nil, func(text string) {
-		number, _ := strconv.Atoi(text)
-		ret.bike.Quantity = number
-	})
-	form.AddInputField("Verhuurd", "", 50, nil, func(text string) {
-		number, _ := strconv.Atoi(text)
-		ret.bike.AmountRented = number
+		ret.accessory.Price = float32(number)
 	})
 
 	form.AddButton("Aanmaken", func() {
-		err := r.client.CreateBike(ret.bike)
+		err := r.client.CreateAccessory(ret.accessory)
 		if err != nil {
 			panic(err)
 		}
-		r.screen.SetRoot(NewBikeListView(r), true)
+		r.screen.SetRoot(NewAccessoryListView(r), true)
 	})
 	form.AddButton("Annuleren", func() {
-		r.screen.SetRoot(NewBikeListView(r), true)
+		r.screen.SetRoot(NewAccessoryListView(r), true)
 	})
 
 	horizontalFlex := tview.NewFlex().SetDirection(tview.FlexRow)

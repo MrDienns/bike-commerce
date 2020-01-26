@@ -30,7 +30,11 @@ func NewAccessoryListView(r *root) *accessoryListView {
 		})
 	}
 
-	list.AddItem("Terug naar hoofdmenu", "", (0), func() {
+	list.AddItem("Accessoire aanmaken", "", rune(0), func() {
+		r.screen.SetRoot(NewAccessoryNewView(r), true)
+	})
+
+	list.AddItem("Terug naar hoofdmenu", "", rune(0), func() {
 		r.screen.SetRoot(NewMenu(r), true)
 	})
 
