@@ -15,16 +15,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// Bike controller is a controller which accepts bike related requests.
 type Bike struct {
 	logger   *zap.Logger
 	key      *rsa.PublicKey
 	bikeRepo database.Connector
 }
 
+// NewBike creates a new Bike controller with a set of parameters and return sit.
 func NewBike(logger *zap.Logger, key *rsa.PublicKey, bikeRepo database.Connector) *Bike {
 	return &Bike{logger, key, bikeRepo}
 }
 
+// Routes returns a *chi.Mux object with all endpoints registered on it.
 func (b *Bike) Routes() *chi.Mux {
 	r := chi.NewRouter()
 
@@ -38,6 +41,7 @@ func (b *Bike) Routes() *chi.Mux {
 	return r
 }
 
+// GetBikes returns a list of all bikes.
 func (b *Bike) GetBikes(w http.ResponseWriter, r *http.Request) {
 	bikes, err := b.bikeRepo.GetBikes()
 	if err != nil {
@@ -48,6 +52,7 @@ func (b *Bike) GetBikes(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// GetBike returns a bike based on the provided ID.
 func (b *Bike) GetBike(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	bike, err := b.bikeRepo.GetBike(id)
@@ -59,6 +64,7 @@ func (b *Bike) GetBike(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// CreateBike accepts a bike as body and creates it.
 func (b *Bike) CreateBike(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
@@ -73,6 +79,7 @@ func (b *Bike) CreateBike(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte{})
 }
 
+// UpdateBike accepts a bike as body and updates an existing one.
 func (b *Bike) UpdateBike(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
@@ -91,6 +98,7 @@ func (b *Bike) UpdateBike(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte{})
 }
 
+// DeleteBike accepts a bike ID and deletes it.
 func (b *Bike) DeleteBike(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	err := b.bikeRepo.DeleteBike(id)

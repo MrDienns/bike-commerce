@@ -18,6 +18,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Authenticate is a controller which handles authentication related endpoints.
 type Authenticate struct {
 	logger     *zap.Logger
 	publickey  *rsa.PublicKey
@@ -25,17 +26,20 @@ type Authenticate struct {
 	connector  database.Connector
 }
 
+// NewAuthenticate accepts a set of parameters and creates an authenticate controller.
 func NewAuthenticate(logger *zap.Logger, publickey *rsa.PublicKey, privatekey *rsa.PrivateKey,
 	connector database.Connector) *Authenticate {
 	return &Authenticate{logger, publickey, privatekey, connector}
 }
 
+// Routes return a *chi.Mux where all endpoints are registered on.
 func (a *Authenticate) Routes() *chi.Mux {
 	r := chi.NewRouter()
 	r.Post("/", a.Login)
 	return r
 }
 
+// Login takes a set of parameters and returns a JWT token if the credentials match.
 func (a *Authenticate) Login(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)

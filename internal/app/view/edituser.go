@@ -5,12 +5,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// userEditView represents the user edit view.
 type userEditView struct {
 	*root
 	tview.Primitive
 	user *model.User
 }
 
+// NewUserEditView creates a new *userEditView and returns it.
 func NewUserEditView(r *root, user *model.User) *userEditView {
 	ret := &userEditView{root: r, user: user}
 

@@ -6,11 +6,13 @@ import (
 	"github.com/rivo/tview"
 )
 
+// rentalListView represents the rental list view.
 type rentalListView struct {
 	*root
 	tview.Primitive
 }
 
+// NewRentalListView creates a new *rentalListView and returns it.
 func NewRentalListView(r *root) *rentalListView {
 	ret := &rentalListView{root: r}
 

@@ -7,12 +7,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// accessoryNewView represents the accessory create view.
 type accessoryNewView struct {
 	*root
 	tview.Primitive
 	accessory *model.Accessory
 }
 
+// NewAccessoryNewView creates a new *accessoryNewView and returns it.
 func NewAccessoryNewView(r *root) *accessoryNewView {
 	ret := &accessoryNewView{root: r, accessory: &model.Accessory{}}
 

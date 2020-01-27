@@ -15,16 +15,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// Rental is a controller used to manage rentals.
 type Rental struct {
 	logger     *zap.Logger
 	key        *rsa.PublicKey
 	rentalRepo database.Connector
 }
 
+// NewRental creates a rental controller and returns it.
 func NewRental(logger *zap.Logger, key *rsa.PublicKey, rentalRepo database.Connector) *Rental {
 	return &Rental{logger, key, rentalRepo}
 }
 
+// Routes returns a *chi.Mux and registers all endpoints on it.
 func (r *Rental) Routes() *chi.Mux {
 	router := chi.NewRouter()
 
@@ -38,6 +41,7 @@ func (r *Rental) Routes() *chi.Mux {
 	return router
 }
 
+// GetRentals returns all rentals.
 func (r *Rental) GetRentals(w http.ResponseWriter, req *http.Request) {
 	rentals, err := r.rentalRepo.GetRentals()
 	if err != nil {
@@ -48,6 +52,7 @@ func (r *Rental) GetRentals(w http.ResponseWriter, req *http.Request) {
 	w.Write(resp)
 }
 
+// GetRental returns a rental based on the provided ID.
 func (r *Rental) GetRental(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
 	rental, err := r.rentalRepo.GetRental(id)
@@ -59,6 +64,7 @@ func (r *Rental) GetRental(w http.ResponseWriter, req *http.Request) {
 	w.Write(resp)
 }
 
+// CreateRental accepts a rental as body and creates it.
 func (r *Rental) CreateRental(w http.ResponseWriter, req *http.Request) {
 
 	decoder := json.NewDecoder(req.Body)
@@ -73,6 +79,7 @@ func (r *Rental) CreateRental(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte{})
 }
 
+// UpdateRental accepts a rental as body and updates an existing rental.
 func (r *Rental) UpdateRental(w http.ResponseWriter, req *http.Request) {
 
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
@@ -91,6 +98,7 @@ func (r *Rental) UpdateRental(w http.ResponseWriter, req *http.Request) {
 	w.Write([]byte{})
 }
 
+// DeleteRental takes a rental ID and deletes it.
 func (r *Rental) DeleteRental(w http.ResponseWriter, req *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(req, "id"))
 	err := r.rentalRepo.DeleteRental(id)

@@ -7,6 +7,7 @@ type Accessory struct {
 	Price float32 `json:"price"`
 }
 
+// RentedAccessory struct represents a rented accessory, which includes an amount.
 type RentedAccessory struct {
 	ID     int     `json:"id"`
 	Name   string  `json:"name"`

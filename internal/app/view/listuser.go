@@ -2,11 +2,13 @@ package view
 
 import "github.com/rivo/tview"
 
+// userListView represents the user list view.
 type userListView struct {
 	*root
 	tview.Primitive
 }
 
+// NewUserListView creates a new *userListView and returns it.
 func NewUserListView(r *root) *userListView {
 	ret := &userListView{root: r}
 

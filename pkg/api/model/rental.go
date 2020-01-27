@@ -1,5 +1,6 @@
 package model
 
+// Rental struct represents a bike rental. It's linked to an employee, a bike, a customer and a set of accessories.
 type Rental struct {
 	ID          int                      `json:"id"`
 	StartDate   string                   `json:"start_date"`

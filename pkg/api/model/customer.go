@@ -1,5 +1,6 @@
 package model
 
+// Customer struct is a struct which is used to represent a customer.
 type Customer struct {
 	ID                  int    `json:"id"`
 	Firstname           string `json:"firstname"`

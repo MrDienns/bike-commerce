@@ -5,12 +5,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// userNewView represents the user create view.
 type userNewView struct {
 	*root
 	tview.Primitive
 	user *model.User
 }
 
+// NewUserNewView creates a new *userNewView and returns it.
 func NewUserNewView(r *root) *userNewView {
 	ret := &userNewView{root: r, user: &model.User{}}
 

@@ -10,12 +10,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// rentalNewView represents the rental create view.
 type rentalNewView struct {
 	*root
 	tview.Primitive
 	rental *model.Rental
 }
 
+// NewRentalNewView creates a new *rentalNewView and returns it.
 func NewRentalNewView(r *root) *rentalNewView {
 	ret := &rentalNewView{root: r, rental: &model.Rental{
 		Employee:    r.client.User,

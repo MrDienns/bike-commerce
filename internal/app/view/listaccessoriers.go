@@ -6,11 +6,13 @@ import (
 	"github.com/rivo/tview"
 )
 
+// accessoryListView represents the accessory edit view.
 type accessoryListView struct {
 	*root
 	tview.Primitive
 }
 
+// NewAccessoryListView creates a new *accessoryListView and returns it.
 func NewAccessoryListView(r *root) *accessoryListView {
 	ret := &accessoryListView{root: r}
 

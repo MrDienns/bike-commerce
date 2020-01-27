@@ -2,11 +2,13 @@ package view
 
 import "github.com/rivo/tview"
 
+// menuView represents the main menu view.
 type menuView struct {
 	*root
 	tview.Primitive
 }
 
+// NewMenu creates a new *menuView and returns it.
 func NewMenu(r *root) *menuView {
 
 	ret := &menuView{root: r}

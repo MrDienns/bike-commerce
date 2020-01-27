@@ -2,11 +2,13 @@ package view
 
 import "github.com/rivo/tview"
 
+// bikeListView represents the bike list view.
 type bikeListView struct {
 	*root
 	tview.Primitive
 }
 
+// NewBikeListView creates a new *bikeListView and returns it.
 func NewBikeListView(r *root) *bikeListView {
 	ret := &bikeListView{root: r}
 

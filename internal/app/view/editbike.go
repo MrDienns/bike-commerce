@@ -8,12 +8,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// bikeEditView represents the bike edit view.
 type bikeEditView struct {
 	*root
 	tview.Primitive
 	bike *model.Bike
 }
 
+// NewBikeEditView creates a new *bikeEditView and returns it.
 func NewBikeEditView(r *root, bike *model.Bike) *bikeEditView {
 	ret := &bikeEditView{root: r, bike: bike}
 

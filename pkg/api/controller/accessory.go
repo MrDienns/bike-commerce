@@ -14,16 +14,19 @@ import (
 	"go.uber.org/zap"
 )
 
+// Accessory is a controller which handles the REST API endpoints for accessories.
 type Accessory struct {
 	logger        *zap.Logger
 	key           *rsa.PublicKey
 	accessoryRepo database.Connector
 }
 
+// NewAccessory creates a new accessory controller.
 func NewAccessory(logger *zap.Logger, key *rsa.PublicKey, accessoryRepo database.Connector) *Accessory {
 	return &Accessory{logger, key, accessoryRepo}
 }
 
+// Routes returns a *chi.Mux routes with all endpoints added to it.
 func (a *Accessory) Routes() *chi.Mux {
 	r := chi.NewRouter()
 
@@ -37,6 +40,7 @@ func (a *Accessory) Routes() *chi.Mux {
 	return r
 }
 
+// GetAccessories returns a list of accessories.
 func (a *Accessory) GetAccessories(w http.ResponseWriter, r *http.Request) {
 	accessories, err := a.accessoryRepo.GetAccessories()
 	if err != nil {
@@ -47,6 +51,7 @@ func (a *Accessory) GetAccessories(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// GetAccessory returns the accessory based on the provided ID.
 func (a *Accessory) GetAccessory(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	accessory, err := a.accessoryRepo.GetAccessory(id)
@@ -58,6 +63,7 @@ func (a *Accessory) GetAccessory(w http.ResponseWriter, r *http.Request) {
 	w.Write(resp)
 }
 
+// CreateAccessory accepts an accessory as body and creates it.
 func (a *Accessory) CreateAccessory(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
@@ -72,6 +78,7 @@ func (a *Accessory) CreateAccessory(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte{})
 }
 
+// UpdateAccessory takes an accessory as body and updates an existing one.
 func (a *Accessory) UpdateAccessory(w http.ResponseWriter, r *http.Request) {
 
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
@@ -90,6 +97,7 @@ func (a *Accessory) UpdateAccessory(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte{})
 }
 
+// DeleteAccessory takes an accessory ID and deletes it.
 func (a *Accessory) DeleteAccessory(w http.ResponseWriter, r *http.Request) {
 	id, _ := strconv.Atoi(chi.URLParam(r, "id"))
 	err := a.accessoryRepo.DeleteAccessory(id)

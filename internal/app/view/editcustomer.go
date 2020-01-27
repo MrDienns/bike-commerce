@@ -7,12 +7,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// customerEditView represents the customer edit view.
 type customerEditView struct {
 	*root
 	tview.Primitive
 	customer *model.Customer
 }
 
+// NewCustomerEditView creates a new *customerEditView and returns it.
 func NewCustomerEditView(r *root, customer *model.Customer) *customerEditView {
 	ret := &customerEditView{root: r, customer: customer}
 

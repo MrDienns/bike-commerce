@@ -12,12 +12,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// rentalEditView represents the rental edit view.
 type rentalEditView struct {
 	*root
 	tview.Primitive
 	rental *model.Rental
 }
 
+// NewRentalEditView creates a new *rentalEditView and returns it.
 func NewRentalEditView(r *root, rental *model.Rental) *rentalEditView {
 	ret := &rentalEditView{root: r, rental: rental}
 

@@ -16,6 +16,7 @@ import (
 	"go.uber.org/zap"
 )
 
+// Server is the HTTP API server.
 type Server struct {
 	logger     *zap.Logger
 	publickey  *rsa.PublicKey
@@ -23,11 +24,13 @@ type Server struct {
 	connector  database.Connector
 }
 
+// NewServer creates and returns a new HTTP server.
 func NewServer(logger *zap.Logger, publickey *rsa.PublicKey, privatekey *rsa.PrivateKey,
 	connector database.Connector) *Server {
 	return &Server{logger, publickey, privatekey, connector}
 }
 
+// Start starts the HTTP server.
 func (s *Server) Start() error {
 	s.logger.Info("Starting HTTP server on port 8080")
 	r := chi.NewRouter()
@@ -40,6 +43,7 @@ func (s *Server) Start() error {
 	return http.ListenAndServe(":8080", r)
 }
 
+// Routes returns a *chi.Mux object with all endpoints registered on it.
 func (s *Server) Routes() *chi.Mux {
 	r := chi.NewRouter()
 	r.Mount("/rental", controller.NewRental(s.logger, s.publickey, s.connector).Routes())

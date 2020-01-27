@@ -5,13 +5,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// loginView represents the view used to login with.
 type loginView struct {
 	*root
 	tview.Primitive
 	username, password string
 }
 
-// NewLogin creates the flex layout and all necessary boxes in order to create a proper layout for the login view.
+// NewLoginView creates the flex layout and all necessary boxes in order to create a proper layout for the login view.
 func NewLoginView(r *root, err string) *loginView {
 
 	ret := &loginView{root: r}

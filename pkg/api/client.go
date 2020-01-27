@@ -210,6 +210,7 @@ func (c *Client) DeleteRental(rental *model.Rental) error {
 	return c.invokeEmpty(fmt.Sprintf("/api/rental/%v", rental.ID), http.MethodDelete, nil)
 }
 
+// invoke accepts a URL, method, body and response object pointer to send and handle the request.
 func (c *Client) invoke(url, method string, body, responseObj interface{}) error {
 	client := &http.Client{}
 	b, err := json.Marshal(body)
@@ -241,6 +242,7 @@ func (c *Client) invoke(url, method string, body, responseObj interface{}) error
 	return unmarshalResponse(httpResponse, responseObj)
 }
 
+// invokeEmpty takes a URL, method and body to send and handle an HTTP request.
 func (c *Client) invokeEmpty(url, method string, body interface{}) error {
 	client := &http.Client{}
 	b, err := json.Marshal(body)
@@ -271,6 +273,7 @@ func (c *Client) invokeEmpty(url, method string, body interface{}) error {
 	return nil
 }
 
+// unmarshalResponse takes an http response, and a pointer to a response object.
 func unmarshalResponse(httpResp *http.Response, response interface{}) error {
 	b, err := ioutil.ReadAll(httpResp.Body)
 	if err != nil {

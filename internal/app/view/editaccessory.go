@@ -8,12 +8,14 @@ import (
 	"github.com/rivo/tview"
 )
 
+// accessoryEditView represents the accessory edit view.
 type accessoryEditView struct {
 	*root
 	tview.Primitive
 	accessory *model.Accessory
 }
 
+// NewAccessoryEditView creates a new *accessoryEditView and returns it.
 func NewAccessoryEditView(r *root, accessory *model.Accessory) *accessoryEditView {
 	ret := &accessoryEditView{root: r, accessory: accessory}
 
